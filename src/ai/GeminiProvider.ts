@@ -1,5 +1,5 @@
 import { AIProvider } from './AIProvider';
-import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem } from '../types';
+import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem, CharacterVisualItem } from '../types';
 
 export class GeminiProvider implements AIProvider {
   name = 'gemini';
@@ -80,6 +80,7 @@ export class GeminiProvider implements AIProvider {
   async extractCharacters(scriptOrFacts: string): Promise<CharacterItem[]> {
     return [
       {
+        id: 'char-201',
         name: 'Main Protagonist',
         role: 'Protagonist',
         ageGroup: 'YOUNG_ADULT',
@@ -90,6 +91,18 @@ export class GeminiProvider implements AIProvider {
         confidence: 0.91
       }
     ];
+  }
+
+  async generateCharacterVisuals(character: CharacterItem): Promise<CharacterVisualItem> {
+    return {
+      characterId: character.id || 'char-201',
+      seed: 88888,
+      faceEmbedding: JSON.stringify([0.05, 0.22, -0.11]),
+      turnaroundPrompt: `Gemini visual sheet for ${character.name}`,
+      avatarUrl: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500`,
+      clothingStyle: 'Modern Classic',
+      consistencyScore: 0.92
+    };
   }
 
   async selectNarrator(contentInfo: { title: string; contentType: string; genre?: string }, script: string, characters: CharacterItem[]): Promise<VoiceProfileResult> {

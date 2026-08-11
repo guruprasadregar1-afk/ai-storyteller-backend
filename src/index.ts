@@ -12,7 +12,10 @@ import {
   getAIHealth,
   segmentScriptBeats,
   getScriptScenes,
-  updateScriptSceneBeat
+  updateScriptSceneBeat,
+  generateCharacterVisualsController,
+  getCharacterVisualBibleController,
+  updateCharacterAvatarController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -37,6 +40,11 @@ app.get('/api/ai/providers/health', getAIHealth);
 app.post('/api/scripts/:id/segment', segmentScriptBeats);
 app.get('/api/scripts/:id/scenes', getScriptScenes);
 app.put('/api/scripts/:id/scenes/:sceneId', updateScriptSceneBeat);
+
+// API Routes - Sprint 3
+app.post('/api/characters/:id/visuals', generateCharacterVisualsController);
+app.get('/api/characters/:id/bible', getCharacterVisualBibleController);
+app.put('/api/characters/:id/avatar', updateCharacterAvatarController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

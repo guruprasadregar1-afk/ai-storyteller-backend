@@ -1,5 +1,5 @@
 import { AIProvider } from './AIProvider';
-import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem } from '../types';
+import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem, CharacterVisualItem } from '../types';
 
 export class GroqProvider implements AIProvider {
   name = 'groq';
@@ -79,6 +79,7 @@ export class GroqProvider implements AIProvider {
   async extractCharacters(scriptOrFacts: string): Promise<CharacterItem[]> {
     return [
       {
+        id: 'char-301',
         name: 'Protagonist',
         role: 'Hero',
         ageGroup: 'ADULT',
@@ -89,6 +90,18 @@ export class GroqProvider implements AIProvider {
         confidence: 0.90
       }
     ];
+  }
+
+  async generateCharacterVisuals(character: CharacterItem): Promise<CharacterVisualItem> {
+    return {
+      characterId: character.id || 'char-301',
+      seed: 99999,
+      faceEmbedding: JSON.stringify([0.1, 0.2, 0.3]),
+      turnaroundPrompt: `Groq sheet for ${character.name}`,
+      avatarUrl: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500`,
+      clothingStyle: 'Vintage Dark',
+      consistencyScore: 0.90
+    };
   }
 
   async selectNarrator(contentInfo: { title: string; contentType: string; genre?: string }, script: string, characters: CharacterItem[]): Promise<VoiceProfileResult> {

@@ -1,5 +1,5 @@
 import { AIProvider } from './AIProvider';
-import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem } from '../types';
+import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem, CharacterVisualItem } from '../types';
 
 export class ClaudeProvider implements AIProvider {
   name = 'claude';
@@ -100,6 +100,7 @@ export class ClaudeProvider implements AIProvider {
   async extractCharacters(scriptOrFacts: string): Promise<CharacterItem[]> {
     return [
       {
+        id: 'char-101',
         name: 'Protagonist',
         role: 'Lead',
         ageGroup: 'YOUNG_ADULT',
@@ -110,6 +111,7 @@ export class ClaudeProvider implements AIProvider {
         confidence: 0.95
       },
       {
+        id: 'char-102',
         name: 'Mentor / Companion',
         role: 'Supporting',
         ageGroup: 'ADULT',
@@ -120,6 +122,21 @@ export class ClaudeProvider implements AIProvider {
         confidence: 0.90
       }
     ];
+  }
+
+  async generateCharacterVisuals(character: CharacterItem): Promise<CharacterVisualItem> {
+    const seed = 424242 + Math.floor(Math.random() * 1000);
+    const turnaroundPrompt = `Character turnaround sheet 8k render, ${character.name}, ${character.genderPresentation} ${character.ageGroup}, ${character.appearance}, personality: ${character.personality}, front view, side view, back view, consistent seed ${seed}.`;
+
+    return {
+      characterId: character.id || `char-${Date.now()}`,
+      seed,
+      faceEmbedding: JSON.stringify([0.12, -0.45, 0.88, 0.34, -0.19]),
+      turnaroundPrompt,
+      avatarUrl: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80`,
+      clothingStyle: 'Cinematic Heroic',
+      consistencyScore: 0.96
+    };
   }
 
   async selectNarrator(contentInfo: { title: string; contentType: string; genre?: string }, script: string, characters: CharacterItem[]): Promise<VoiceProfileResult> {

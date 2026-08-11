@@ -132,7 +132,7 @@ model SceneBeat {
 }
 
 model Character {
-  id                 String        @id @default(uuid())
+  id                 String            @id @default(uuid())
   contentSourceId    String
   name               String
   role               String
@@ -140,12 +140,31 @@ model Character {
   genderPresentation String
   personality        String
   appearance         String
-  importance         String        @default("MEDIUM")
-  confidence         Float         @default(1.0)
-  createdAt          DateTime      @default(now())
-  contentSource      ContentSource @relation(fields: [contentSourceId], references: [id], onDelete: Cascade)
+  importance         String            @default("MEDIUM")
+  confidence         Float             @default(1.0)
+  createdAt          DateTime          @default(now())
+  contentSource      ContentSource     @relation(fields: [contentSourceId], references: [id], onDelete: Cascade)
+
+  visuals            CharacterVisual[]
 
   @@map("characters")
+}
+
+model CharacterVisual {
+  id               String    @id @default(uuid())
+  characterId      String
+  seed             Int       @default(424242)
+  faceEmbedding    String?   // Vector embedding representation
+  turnaroundPrompt String    @db.Text
+  avatarUrl        String?
+  clothingStyle    String    @default("Casual Classic")
+  consistencyScore Float     @default(0.95)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  character        Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@map("character_visuals")
 }
 
 model NarratorProfile {

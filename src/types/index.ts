@@ -38,6 +38,7 @@ export interface SceneBeatItem {
 }
 
 export interface CharacterItem {
+  id?: string;
   name: string;
   role: string;
   ageGroup: string;
@@ -46,6 +47,17 @@ export interface CharacterItem {
   appearance: string;
   importance: 'HIGH' | 'MEDIUM' | 'LOW';
   confidence: number;
+}
+
+export interface CharacterVisualItem {
+  id?: string;
+  characterId: string;
+  seed: number;
+  faceEmbedding?: string;
+  turnaroundPrompt: string;
+  avatarUrl?: string;
+  clothingStyle: string;
+  consistencyScore: number;
 }
 
 export interface VoiceProfileResult {

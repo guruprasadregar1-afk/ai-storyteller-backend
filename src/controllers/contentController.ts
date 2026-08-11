@@ -218,3 +218,42 @@ export const updateScriptSceneBeat = async (req: Request, res: Response) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+// Sprint 3 Controllers: Character Consistency & Visual Bible Engine
+export const generateCharacterVisualsController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { customTrait } = req.body;
+
+    const visual = await characterService.generateVisualBible(id, customTrait);
+    return res.json({ characterId: id, visual });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getCharacterVisualBibleController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const bible = await characterService.getVisualBible(id);
+    return res.json({ characterId: id, bible });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateCharacterAvatarController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { seed, avatarUrl, clothingStyle } = req.body;
+
+    if (seed === undefined) {
+      return res.status(400).json({ error: 'Seed integer parameter is required for locking character visual consistency.' });
+    }
+
+    const updated = await characterService.updateAvatarAndSeed(id, Number(seed), avatarUrl, clothingStyle);
+    return res.json({ characterId: id, visual: updated });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};

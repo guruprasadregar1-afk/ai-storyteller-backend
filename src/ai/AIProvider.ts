@@ -9,6 +9,7 @@ export interface AIProvider {
   generateStoryScript(title: string, facts: string[], params: ScriptGenerationParams): Promise<ScriptResult>;
   segmentScript(scriptText: string): Promise<SceneBeatItem[]>;
   extractCharacters(scriptOrFacts: string): Promise<CharacterItem[]>;
+  generateCharacterVisuals(character: CharacterItem): Promise<CharacterVisualItem>;
   selectNarrator(contentInfo: { title: string; contentType: string; genre?: string }, script: string, characters: CharacterItem[]): Promise<VoiceProfileResult>;
 }
 
