@@ -29,6 +29,33 @@ export class ContentService {
       .replace(/\s+/g, ' ')
       .trim();
   }
+  async analyzeInput(input: string, userHint?: string) {
+    const existingContent = await this.findExistingContent(input);
+
+    if (existingContent) {
+      return {
+        found: true,
+        source: existingContent,
+        userHint,
+      };
+    }
+
+    return {
+      found: false,
+      source: null,
+      input,
+      userHint,
+    };
+  }
+  async getContentById(id: string): Promise<ContentSourceRecord | null> {
+    for (const record of this.inMemoryDb.values()) {
+      if (record.id === id) {
+        return record;
+      }
+    }
+
+    return null;
+  }
 
   async findExistingContent(inputTitle: string): Promise<ContentSourceRecord | null> {
     const normalized = this.normalizeTitle(inputTitle);

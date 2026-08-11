@@ -9,7 +9,7 @@ export async function getStylePresetsController(req: Request, res: Response) {
 }
 
 export async function createStylePresetController(req: Request, res: Response) {
-  const newStyle = styleService.createCustomStyle(req.body);
+  const newStyle = styleService.saveStylePreset(req.body);
   res.json({ success: true, style: newStyle });
 }
 

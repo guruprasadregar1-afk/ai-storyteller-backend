@@ -9,7 +9,7 @@ const voiceService = new VoiceService();
 
 export async function getNarratorController(req: Request, res: Response) {
   const { id } = req.params;
-  const narrator = await narratorService.recommendNarrator(id, 'HISTORICAL');
+  const narrator = await narratorService.selectNarrator({ title: id, contentType: 'HISTORICAL' }, '', []);
   res.json({ success: true, narrator });
 }
 

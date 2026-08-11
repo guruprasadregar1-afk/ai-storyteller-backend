@@ -4,7 +4,7 @@ import { PromptLabService } from '../../../services/PromptLabService';
 const promptLabService = new PromptLabService();
 
 export async function createPromptTemplateController(req: Request, res: Response) {
-  const template = promptLabService.createTemplate(req.body);
+  const template = promptLabService.saveTemplate(req.body);
   res.json({ success: true, template });
 }
 

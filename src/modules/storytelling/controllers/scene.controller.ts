@@ -14,7 +14,7 @@ export async function segmentScriptController(req: Request, res: Response) {
 
 export async function getScenesController(req: Request, res: Response) {
   const { id } = req.params;
-  const scenes = sceneService.getScriptScenes(id);
+  const scenes = await sceneService.getScenesByScriptId(id);
   res.json({ success: true, scenes });
 }
 

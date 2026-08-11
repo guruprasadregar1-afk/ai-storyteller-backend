@@ -7,7 +7,7 @@ const characterService = new CharacterService(aiManager);
 
 export async function getCharactersController(req: Request, res: Response) {
   const { id } = req.params;
-  const characters = await characterService.extractCharactersFromScript(id);
+  const characters = await characterService.extractCharacters(id);
   res.json({ success: true, characters });
 }
 

@@ -6,7 +6,7 @@ export class ResearchService {
   private rightsService = new RightsService();
 
   async researchTopic(contentId: string, topic: string) {
-    return await this.coreResearch.fetchSourceFacts(contentId, topic);
+    return await this.coreResearch.performResearch(contentId, topic);
   }
 
   async checkRights(title: string, author?: string) {

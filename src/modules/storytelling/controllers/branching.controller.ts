@@ -6,7 +6,7 @@ const branchingService = new BranchingService();
 export async function addScriptBranchNodeController(req: Request, res: Response) {
   const { id } = req.params;
   const { nodeId, parentId, choiceText, sceneContent } = req.body;
-  const node = branchingService.addBranchNode(id, nodeId, parentId, choiceText, sceneContent);
+  const node = branchingService.addBranchNode(id, nodeId, sceneContent || 'Scene content', parentId, choiceText);
   res.json({ success: true, node });
 }
 
@@ -18,7 +18,7 @@ export async function getScriptBranchTreeController(req: Request, res: Response)
 
 export async function traverseScriptChoicesController(req: Request, res: Response) {
   const { id } = req.params;
-  const { currentNodeId, choiceIndex } = req.body;
-  const nextNode = branchingService.traverseChoice(id, currentNodeId, choiceIndex || 0);
-  res.json({ success: true, nextNode });
+  const { nodeIds } = req.body;
+  const path = branchingService.traversePath(id, nodeIds || ['root']);
+  res.json({ success: true, path });
 }

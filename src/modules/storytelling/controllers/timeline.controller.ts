@@ -11,13 +11,13 @@ export async function syncTimelineController(req: Request, res: Response) {
 
 export async function getTimelineController(req: Request, res: Response) {
   const { scriptId } = req.params;
-  const timeline = timelineService.getTimeline(scriptId);
+  const timeline = await timelineService.getTimelineByScriptId(scriptId);
   res.json({ success: true, timeline });
 }
 
 export async function updateTimelineClipController(req: Request, res: Response) {
   const { clipId } = req.params;
-  const { startTimeSeconds, durationSeconds } = req.body;
-  const updated = timelineService.updateClipPosition(clipId, startTimeSeconds, durationSeconds);
+  const { scriptId, startTimeSeconds, durationSeconds } = req.body;
+  const updated = await timelineService.updateClipSettings(scriptId || 'script-901', clipId, startTimeSeconds || 0, durationSeconds || 5);
   res.json({ success: true, clip: updated });
 }
