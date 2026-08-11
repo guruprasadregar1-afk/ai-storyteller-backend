@@ -15,6 +15,7 @@ import { VideoService } from '../services/VideoService';
 import { TimelineService } from '../services/TimelineService';
 import { SubtitleService } from '../services/SubtitleService';
 import { RenderService } from '../services/RenderService';
+import { QueueService } from '../services/QueueService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -32,6 +33,7 @@ const videoService = new VideoService();
 const timelineService = new TimelineService();
 const subtitleService = new SubtitleService();
 const renderService = new RenderService();
+const queueService = new QueueService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -631,6 +633,50 @@ export const cancelRenderJobController = async (req: Request, res: Response) => 
     }
 
     return res.json({ job: cancelled });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 12 Controllers: Production-Grade Queue, Job Scheduling & Webhook Infrastructure
+export const enqueueJobController = async (req: Request, res: Response) => {
+  try {
+    const { taskName, payload = {}, webhookUrl, maxAttempts = 3 } = req.body;
+    if (!taskName) {
+      return res.status(400).json({ error: 'taskName parameter is required.' });
+    }
+
+    const job = await queueService.enqueueJob(taskName, payload, webhookUrl, Number(maxAttempts));
+    return res.status(202).json({ job });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getJobStatusController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const job = await queueService.getJob(id);
+
+    if (!job) {
+      return res.status(404).json({ error: 'Queue job not found.' });
+    }
+
+    return res.json({ job });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const registerWebhookController = async (req: Request, res: Response) => {
+  try {
+    const { event, url } = req.body;
+    if (!event || !url) {
+      return res.status(400).json({ error: 'event and url parameters are required.' });
+    }
+
+    const webhook = queueService.registerWebhook(event, url);
+    return res.status(201).json({ webhook });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

@@ -323,3 +323,17 @@ model RenderJob {
 
   @@map("render_jobs")
 }
+
+model JobQueue {
+  id               String   @id @default(uuid())
+  taskName         String
+  payload          Json
+  status           String   @default("QUEUED") // QUEUED | ACTIVE | COMPLETED | FAILED | RETRYING
+  attempts         Int      @default(0)
+  maxAttempts      Int      @default(3)
+  webhookUrl       String?
+  lastError        String?  @db.Text
+  createdAt        DateTime @default(now())
+
+  @@map("job_queues")
+}

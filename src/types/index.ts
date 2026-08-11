@@ -213,6 +213,17 @@ export interface RenderJobItem {
   renderTimeMs?: number;
 }
 
+export interface QueueJobItem {
+  id: string;
+  taskName: string;
+  payload: Record<string, any>;
+  status: 'QUEUED' | 'ACTIVE' | 'COMPLETED' | 'FAILED' | 'RETRYING';
+  attempts: number;
+  maxAttempts: number;
+  webhookUrl?: string;
+  lastError?: string;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';
