@@ -1,6 +1,7 @@
 import { AIProviderManager } from '../ai/AIProviderManager';
 import { RightsService } from './RightsService';
 import { ScriptGenerationParams, ScriptResult, ContentType } from '../types';
+import { prismaService } from '../database/prisma/prisma.service';
 
 export class ScriptService {
   constructor(
@@ -23,6 +24,30 @@ export class ScriptService {
 
     // Enforce rights mode & quality check
     scriptResult.rightsMode = rightsCheck.rightsMode;
+
+    // Persist script to Prisma DB
+    if (prismaService.isAvailable) {
+      try {
+        const scriptId = `script-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`;
+        await prismaService.storytellingScript.create({
+          data: {
+            id: scriptId,
+            contentSourceId: title,
+            mode: params.mode || 'FULL_STORY',
+            language: 'English',
+            script: scriptResult.script,
+            model: scriptResult.model,
+            provider: scriptResult.provider,
+            rightsMode: scriptResult.rightsMode,
+            qualityScore: scriptResult.qualityScore || 1.0
+          }
+        });
+        console.log(`[ScriptService] Persisted generated script '${scriptId}' to Prisma Database.`);
+      } catch {
+        // In-memory fallback
+      }
+    }
+
     return scriptResult;
   }
 }

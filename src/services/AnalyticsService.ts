@@ -1,4 +1,5 @@
 import { AnalyticsEventItem, RetentionHeatmap } from '../types';
+import { prismaService } from '../database/prisma/prisma.service';
 
 export class AnalyticsService {
   private eventsStore: Map<string, AnalyticsEventItem[]> = new Map();
@@ -16,6 +17,23 @@ export class AnalyticsService {
     };
 
     this.eventsStore.get(event.scriptId)!.push(item);
+
+    if (prismaService.isAvailable) {
+      try {
+        prismaService.analyticsEvent.create({
+          data: {
+            id: item.id,
+            scriptId: item.scriptId,
+            eventType: item.eventType,
+            watchTimeSeconds: item.watchTimeSeconds,
+            sceneId: item.sceneId
+          }
+        }).catch(() => {});
+      } catch {
+        // In-memory fallback
+      }
+    }
+
     return item;
   }
 
@@ -26,7 +44,6 @@ export class AnalyticsService {
 
     const completionRate = Math.min(100, Math.round((completions / views) * 100));
 
-    // Scene retention fallback breakdown
     const sceneRetention = [
       { sceneId: 'scene-1', retentionPercent: 100 },
       { sceneId: 'scene-2', retentionPercent: 88 },

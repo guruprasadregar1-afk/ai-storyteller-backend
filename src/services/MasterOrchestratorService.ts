@@ -10,6 +10,7 @@ import { VideoService } from './VideoService';
 import { TimelineService } from './TimelineService';
 import { SubtitleService } from './SubtitleService';
 import { RenderService } from './RenderService';
+import { prismaService } from '../database/prisma/prisma.service';
 
 export class MasterOrchestratorService {
   constructor(
@@ -110,7 +111,7 @@ export class MasterOrchestratorService {
     const totalDurationMs = Date.now() - startTime;
     console.log(`[MasterOrchestrator] End-to-End Pipeline Completed successfully in ${totalDurationMs}ms! (Render URL: ${renderJob.outputVideoUrl})`);
 
-    return {
+    const result: MasterPipelineResult = {
       pipelineId: `pipe-${Date.now()}`,
       titleInput,
       contentType,
@@ -121,5 +122,26 @@ export class MasterOrchestratorService {
       renderUrl: renderJob.outputVideoUrl!,
       totalDurationMs
     };
+
+    // Persist to Prisma DB
+    if (prismaService.isAvailable) {
+      try {
+        await prismaService.masterPipeline.create({
+          data: {
+            id: result.pipelineId,
+            titleInput: result.titleInput,
+            contentType: result.contentType,
+            status: result.status,
+            scriptId: result.scriptId,
+            renderUrl: result.renderUrl,
+            totalDurationMs: result.totalDurationMs
+          }
+        });
+      } catch {
+        // In-memory fallback
+      }
+    }
+
+    return result;
   }
 }

@@ -1,4 +1,5 @@
 import { ContentType, RightsStatus, VerificationStatus } from '../types';
+import { prismaService } from '../database/prisma/prisma.service';
 
 export interface ContentSourceRecord {
   id: string;
@@ -18,7 +19,6 @@ export class ContentService {
   private aliasMap: Map<string, string> = new Map();
 
   constructor() {
-    // Seed initial demo records for database-first reuse check
     this.seedInitialRecords();
   }
 
@@ -29,6 +29,7 @@ export class ContentService {
       .replace(/\s+/g, ' ')
       .trim();
   }
+
   async analyzeInput(input: string, userHint?: string) {
     const existingContent = await this.findExistingContent(input);
 
@@ -47,7 +48,33 @@ export class ContentService {
       userHint,
     };
   }
+
   async getContentById(id: string): Promise<ContentSourceRecord | null> {
+    if (prismaService.isAvailable) {
+      try {
+        const dbSource = await prismaService.contentSource.findUnique({
+          where: { id },
+          include: { aliases: true, references: true }
+        });
+        if (dbSource) {
+          return {
+            id: dbSource.id,
+            title: dbSource.title,
+            normalizedTitle: dbSource.normalizedTitle,
+            contentType: dbSource.contentType as ContentType,
+            description: dbSource.description || undefined,
+            rightsStatus: dbSource.rightsStatus as RightsStatus,
+            verificationStatus: dbSource.verificationStatus as VerificationStatus,
+            lastVerifiedAt: dbSource.lastVerifiedAt,
+            aliases: dbSource.aliases.map(a => a.alias),
+            references: dbSource.references.map(r => ({ url: r.url, title: r.title, publisher: r.publisher || undefined, evidence: r.evidence, rightsEvidence: r.rightsEvidence || undefined }))
+          };
+        }
+      } catch {
+        // Fallback to in-memory
+      }
+    }
+
     for (const record of this.inMemoryDb.values()) {
       if (record.id === id) {
         return record;
@@ -59,6 +86,39 @@ export class ContentService {
 
   async findExistingContent(inputTitle: string): Promise<ContentSourceRecord | null> {
     const normalized = this.normalizeTitle(inputTitle);
+
+    // 0. Database First Lookup
+    if (prismaService.isAvailable) {
+      try {
+        const dbSource = await prismaService.contentSource.findFirst({
+          where: {
+            OR: [
+              { normalizedTitle: normalized },
+              { aliases: { some: { normalizedAlias: normalized } } }
+            ]
+          },
+          include: { aliases: true, references: true }
+        });
+
+        if (dbSource) {
+          console.log(`[ContentService] Database hit for normalized title: '${normalized}'`);
+          return {
+            id: dbSource.id,
+            title: dbSource.title,
+            normalizedTitle: dbSource.normalizedTitle,
+            contentType: dbSource.contentType as ContentType,
+            description: dbSource.description || undefined,
+            rightsStatus: dbSource.rightsStatus as RightsStatus,
+            verificationStatus: dbSource.verificationStatus as VerificationStatus,
+            lastVerifiedAt: dbSource.lastVerifiedAt,
+            aliases: dbSource.aliases.map(a => a.alias),
+            references: dbSource.references.map(r => ({ url: r.url, title: r.title, publisher: r.publisher || undefined, evidence: r.evidence, rightsEvidence: r.rightsEvidence || undefined }))
+          };
+        }
+      } catch {
+        // Fallback to in-memory
+      }
+    }
 
     // 1. Exact match lookup
     if (this.inMemoryDb.has(normalized)) {
@@ -114,6 +174,31 @@ export class ContentService {
       for (const alias of record.aliases) {
         const normAlias = this.normalizeTitle(alias);
         this.aliasMap.set(normAlias, normalizedTitle);
+      }
+    }
+
+    // Persist to Prisma DB
+    if (prismaService.isAvailable) {
+      try {
+        await prismaService.contentSource.upsert({
+          where: { normalizedTitle },
+          update: {
+            description: newRecord.description,
+            rightsStatus: newRecord.rightsStatus as any,
+            verificationStatus: 'VERIFIED'
+          },
+          create: {
+            id: newRecord.id,
+            title: newRecord.title,
+            normalizedTitle: newRecord.normalizedTitle,
+            contentType: newRecord.contentType as any,
+            description: newRecord.description,
+            rightsStatus: newRecord.rightsStatus as any,
+            verificationStatus: 'VERIFIED'
+          }
+        });
+      } catch {
+        // Fallback to in-memory
       }
     }
 

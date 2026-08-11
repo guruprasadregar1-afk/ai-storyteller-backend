@@ -1,8 +1,9 @@
-import { AuditLogItem, SystemDiagnostics } from '../types';
+import { AuditLogItem } from '../types';
+import { prismaService } from '../database/prisma/prisma.service';
 
 export class SecurityService {
   private auditLogsStore: AuditLogItem[] = [];
-  private requestCounts: Map<string, { count: number; resetTime: number }> = new Map();
+  private rateLimiterStore: Map<string, { count: number; windowStart: number }> = new Map();
 
   sanitizeInput(input: string): string {
     if (!input) return '';
@@ -12,28 +13,27 @@ export class SecurityService {
       .trim();
   }
 
-  checkRateLimit(ipAddress: string, maxRequests = 100, windowMs = 60000): { allowed: boolean; remaining: number } {
+  checkRateLimit(ip: string, limit = 100, windowMs = 60000): { allowed: boolean; remaining: number } {
     const now = Date.now();
-    let record = this.requestCounts.get(ipAddress);
+    const record = this.rateLimiterStore.get(ip) || { count: 0, windowStart: now };
 
-    if (!record || now > record.resetTime) {
-      record = { count: 1, resetTime: now + windowMs };
-      this.requestCounts.set(ipAddress, record);
-      return { allowed: true, remaining: maxRequests - 1 };
+    if (now - record.windowStart > windowMs) {
+      record.count = 1;
+      record.windowStart = now;
+    } else {
+      record.count += 1;
     }
 
-    record.count++;
-    if (record.count > maxRequests) {
-      return { allowed: false, remaining: 0 };
-    }
-
-    return { allowed: true, remaining: maxRequests - record.count };
+    this.rateLimiterStore.set(ip, record);
+    const allowed = record.count <= limit;
+    const remaining = Math.max(0, limit - record.count);
+    return { allowed, remaining };
   }
 
   logAudit(userId: string, action: string, ipAddress = '127.0.0.1'): AuditLogItem {
     console.log(`[SecurityService] Audit Log: User '${userId}' executed '${action}' from ${ipAddress}`);
 
-    const item: AuditLogItem = {
+    const logItem: AuditLogItem = {
       id: `audit-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
       userId,
       action,
@@ -41,44 +41,47 @@ export class SecurityService {
       timestamp: new Date()
     };
 
-    this.auditLogsStore.push(item);
-    return item;
+    this.auditLogsStore.push(logItem);
+
+    if (prismaService.isAvailable) {
+      try {
+        prismaService.auditLog.create({
+          data: {
+            id: logItem.id,
+            userId: logItem.userId,
+            action: logItem.action,
+            ipAddress: logItem.ipAddress
+          }
+        }).catch(() => {});
+      } catch {
+        // In-memory fallback
+      }
+    }
+
+    return logItem;
   }
 
   getAuditLogs(): AuditLogItem[] {
-    return [...this.auditLogsStore];
+    return this.auditLogsStore;
   }
 
-  getDiagnostics(): SystemDiagnostics {
+  getDiagnostics() {
+    const memory = process.memoryUsage();
     return {
       status: 'HEALTHY',
-      version: '1.0.0-production',
-      activeServices: [
-        'ContentService',
-        'ScriptService',
-        'CharacterService',
-        'SceneService',
-        'StyleService',
-        'ImageService',
-        'VoiceService',
-        'AudioService',
-        'VideoService',
-        'TimelineService',
-        'SubtitleService',
-        'RenderService',
-        'QueueService',
-        'ExportService',
-        'PromptLabService',
-        'CollaborationService',
-        'BranchingService',
-        'WorkspaceService',
-        'BillingService',
-        'AnalyticsService',
-        'SecurityService',
-        'MasterOrchestratorService'
-      ],
+      version: 'production-v1.0.0',
       uptimeSeconds: Math.floor(process.uptime()),
-      memoryUsageMb: Math.round(process.memoryUsage().heapUsed / 1024 / 1024)
+      memoryUsageMb: Math.round((memory.heapUsed / 1024 / 1024) * 100) / 100,
+      activeRateLimiters: this.rateLimiterStore.size,
+      totalAuditLogsRecorded: this.auditLogsStore.length,
+      activeServices: [
+        'ContentService', 'ResearchService', 'RightsService', 'ScriptService',
+        'SceneService', 'CharacterService', 'NarratorService', 'StyleService',
+        'ImageService', 'VoiceService', 'AudioService', 'VideoService',
+        'TimelineService', 'SubtitleService', 'RenderService', 'QueueService',
+        'ExportService', 'PromptLabService', 'CollaborationService', 'BranchingService',
+        'WorkspaceService', 'BillingService', 'AnalyticsService', 'SecurityService'
+      ]
     };
   }
 }

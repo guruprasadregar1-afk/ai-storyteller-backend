@@ -11,7 +11,7 @@ export class GroqProvider implements AIProvider {
   }
 
   async isAvailable(): Promise<boolean> {
-    return Boolean(this.apiKey && this.apiKey.length > 5);
+    return Boolean(this.apiKey && this.apiKey.length > 10 && !this.apiKey.includes('your_'));
   }
 
   async classifyContent(input: string): Promise<ClassifyResult> {

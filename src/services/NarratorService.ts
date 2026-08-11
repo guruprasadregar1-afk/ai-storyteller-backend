@@ -1,5 +1,6 @@
 import { AIProviderManager } from '../ai/AIProviderManager';
 import { CharacterItem, VoiceProfileResult } from '../types';
+import { prismaService } from '../database/prisma/prisma.service';
 
 export class NarratorService {
   constructor(private aiManager: AIProviderManager) {}
@@ -9,6 +10,31 @@ export class NarratorService {
     script: string,
     characters: CharacterItem[]
   ): Promise<VoiceProfileResult> {
-    return this.aiManager.selectNarrator(contentInfo, script, characters);
+    const narrator = await this.aiManager.selectNarrator(contentInfo, script, characters);
+
+    try {
+      await prismaService.narratorProfile.create({
+        data: {
+          contentSourceId: contentInfo.title,
+          ageGroup: narrator.ageGroup,
+          genderPresentation: narrator.genderPresentation,
+          tone: narrator.tone,
+          emotion: narrator.emotion,
+          pace: narrator.pace,
+          language: narrator.language || 'English',
+          accent: narrator.accent || 'Neutral',
+          style: narrator.style,
+          audience: narrator.audience,
+          reasoning: narrator.reasoning,
+          confidence: narrator.confidence || 1.0,
+          selectedProvider: narrator.selectedProvider,
+          selectedModel: narrator.selectedModel
+        }
+      });
+    } catch {
+      // In-memory fallback
+    }
+
+    return narrator;
   }
 }
