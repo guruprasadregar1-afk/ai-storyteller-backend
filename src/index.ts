@@ -15,7 +15,10 @@ import {
   updateScriptSceneBeat,
   generateCharacterVisualsController,
   getCharacterVisualBibleController,
-  updateCharacterAvatarController
+  updateCharacterAvatarController,
+  getStylePresetsController,
+  createStylePresetController,
+  generateEnvironmentRefController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -45,6 +48,11 @@ app.put('/api/scripts/:id/scenes/:sceneId', updateScriptSceneBeat);
 app.post('/api/characters/:id/visuals', generateCharacterVisualsController);
 app.get('/api/characters/:id/bible', getCharacterVisualBibleController);
 app.put('/api/characters/:id/avatar', updateCharacterAvatarController);
+
+// API Routes - Sprint 4
+app.get('/api/styles', getStylePresetsController);
+app.post('/api/styles/preset', createStylePresetController);
+app.post('/api/environments/generate', generateEnvironmentRefController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

@@ -202,3 +202,27 @@ model AIJob {
 
   @@map("ai_jobs")
 }
+
+model StylePreset {
+  id               String   @id @default(uuid())
+  name             String   @unique
+  category         String   @default("Cinematic")
+  promptModifier   String   @db.Text
+  negativePrompt   String?  @db.Text
+  paletteTags      String[]
+  coherenceScore   Float    @default(0.95)
+  createdAt        DateTime @default(now())
+
+  @@map("style_presets")
+}
+
+model EnvironmentRef {
+  id               String   @id @default(uuid())
+  locationName     String
+  stylePresetName  String
+  environmentPrompt String  @db.Text
+  coherenceScore   Float    @default(0.95)
+  createdAt        DateTime @default(now())
+
+  @@map("environment_refs")
+}

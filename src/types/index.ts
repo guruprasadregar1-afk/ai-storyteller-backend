@@ -60,6 +60,24 @@ export interface CharacterVisualItem {
   consistencyScore: number;
 }
 
+export interface StylePresetItem {
+  id?: string;
+  name: string;
+  category: string;
+  promptModifier: string;
+  negativePrompt?: string;
+  paletteTags: string[];
+  coherenceScore: number;
+}
+
+export interface EnvironmentRefItem {
+  id?: string;
+  locationName: string;
+  stylePresetName: string;
+  environmentPrompt: string;
+  coherenceScore: number;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

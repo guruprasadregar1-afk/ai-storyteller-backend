@@ -7,6 +7,7 @@ import { ScriptService } from '../services/ScriptService';
 import { CharacterService } from '../services/CharacterService';
 import { NarratorService } from '../services/NarratorService';
 import { SceneService } from '../services/SceneService';
+import { StyleService } from '../services/StyleService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -16,6 +17,7 @@ const scriptService = new ScriptService(aiManager, rightsService);
 const characterService = new CharacterService(aiManager);
 const narratorService = new NarratorService(aiManager);
 const sceneService = new SceneService(aiManager);
+const styleService = new StyleService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -253,6 +255,52 @@ export const updateCharacterAvatarController = async (req: Request, res: Respons
 
     const updated = await characterService.updateAvatarAndSeed(id, Number(seed), avatarUrl, clothingStyle);
     return res.json({ characterId: id, visual: updated });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 4 Controllers: Environment & Style Preset Engine
+export const getStylePresetsController = async (req: Request, res: Response) => {
+  try {
+    const presets = styleService.getStylePresets();
+    return res.json({ presets });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const createStylePresetController = async (req: Request, res: Response) => {
+  try {
+    const { name, category = 'Custom', promptModifier, negativePrompt, paletteTags = [] } = req.body;
+    if (!name || !promptModifier) {
+      return res.status(400).json({ error: 'Style preset name and promptModifier are required.' });
+    }
+
+    const preset = styleService.saveStylePreset({
+      name,
+      category,
+      promptModifier,
+      negativePrompt,
+      paletteTags,
+      coherenceScore: 0.95
+    });
+
+    return res.status(201).json({ preset });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const generateEnvironmentRefController = async (req: Request, res: Response) => {
+  try {
+    const { locationName, stylePresetName = 'Cinematic 3D' } = req.body;
+    if (!locationName) {
+      return res.status(400).json({ error: 'locationName parameter is required.' });
+    }
+
+    const envRef = styleService.generateEnvironmentRef(locationName, stylePresetName);
+    return res.json({ environment: envRef });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }
