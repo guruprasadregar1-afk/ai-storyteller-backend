@@ -14,6 +14,7 @@ import { AudioService } from '../services/AudioService';
 import { VideoService } from '../services/VideoService';
 import { TimelineService } from '../services/TimelineService';
 import { SubtitleService } from '../services/SubtitleService';
+import { RenderService } from '../services/RenderService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -30,6 +31,7 @@ const audioService = new AudioService();
 const videoService = new VideoService();
 const timelineService = new TimelineService();
 const subtitleService = new SubtitleService();
+const renderService = new RenderService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -584,6 +586,51 @@ export const exportSubtitlesController = async (req: Request, res: Response) => 
       res.setHeader('Content-Type', 'text/plain');
       return res.send(subtitleService.generateSRT(sub.cues));
     }
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 11 Controllers: Final Video Assembly & Rendering Pipeline
+export const startRenderJobController = async (req: Request, res: Response) => {
+  try {
+    const { scriptId, resolution = '1080p', fps = 30 } = req.body;
+    if (!scriptId) {
+      return res.status(400).json({ error: 'scriptId parameter is required.' });
+    }
+
+    const job = await renderService.startRenderJob(scriptId, resolution, Number(fps));
+    return res.status(202).json({ job });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getRenderJobStatusController = async (req: Request, res: Response) => {
+  try {
+    const { jobId } = req.params;
+    const job = await renderService.getRenderJobStatus(jobId);
+
+    if (!job) {
+      return res.status(404).json({ error: 'Render job not found.' });
+    }
+
+    return res.json({ job });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const cancelRenderJobController = async (req: Request, res: Response) => {
+  try {
+    const { jobId } = req.params;
+    const cancelled = await renderService.cancelRenderJob(jobId);
+
+    if (!cancelled) {
+      return res.status(404).json({ error: 'Render job not found.' });
+    }
+
+    return res.json({ job: cancelled });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

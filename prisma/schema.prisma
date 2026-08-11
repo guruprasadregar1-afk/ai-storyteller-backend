@@ -309,3 +309,17 @@ model Subtitle {
 
   @@map("subtitles")
 }
+
+model RenderJob {
+  id               String   @id @default(uuid())
+  scriptId         String
+  resolution       String   @default("1080p") // 720p | 1080p | 4K
+  fps              Int      @default(30)
+  outputVideoUrl   String?
+  progressPercent  Int      @default(0)
+  status           String   @default("QUEUED") // QUEUED | RENDERING | COMPLETED | FAILED | CANCELLED
+  renderTimeMs     Int?
+  createdAt        DateTime @default(now())
+
+  @@map("render_jobs")
+}

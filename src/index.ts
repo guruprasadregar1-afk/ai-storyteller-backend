@@ -36,7 +36,10 @@ import {
   updateTimelineClipController,
   generateSubtitlesController,
   translateSubtitlesController,
-  exportSubtitlesController
+  exportSubtitlesController,
+  startRenderJobController,
+  getRenderJobStatusController,
+  cancelRenderJobController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -101,6 +104,11 @@ app.put('/api/timeline/clips/:clipId', updateTimelineClipController);
 app.post('/api/subtitles/generate', generateSubtitlesController);
 app.post('/api/subtitles/translate', translateSubtitlesController);
 app.get('/api/subtitles/export/:scriptId', exportSubtitlesController);
+
+// API Routes - Sprint 11
+app.post('/api/render/start', startRenderJobController);
+app.get('/api/render/:jobId', getRenderJobStatusController);
+app.post('/api/render/:jobId/cancel', cancelRenderJobController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

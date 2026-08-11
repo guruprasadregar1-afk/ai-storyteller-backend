@@ -202,6 +202,17 @@ export interface SubtitleItem {
   vttExportUrl?: string;
 }
 
+export interface RenderJobItem {
+  jobId: string;
+  scriptId: string;
+  resolution: '720p' | '1080p' | '4K';
+  fps: number;
+  outputVideoUrl?: string;
+  progressPercent: number;
+  status: 'QUEUED' | 'RENDERING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
+  renderTimeMs?: number;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';
