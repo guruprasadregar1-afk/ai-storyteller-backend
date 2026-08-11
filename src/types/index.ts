@@ -161,6 +161,31 @@ export interface VideoJobStatus {
   status: 'QUEUED' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
 }
 
+export interface TimelineClipItem {
+  id: string;
+  clipType: 'VIDEO' | 'AUDIO_NARRATION' | 'AUDIO_MUSIC' | 'AUDIO_SFX' | 'TEXT';
+  startTimeSeconds: number;
+  durationSeconds: number;
+  assetUrl: string;
+  label: string;
+}
+
+export interface TimelineTrackItem {
+  id: string;
+  name: string;
+  trackType: 'VIDEO' | 'AUDIO' | 'SUBTITLE';
+  layerOrder: number;
+  clips: TimelineClipItem[];
+}
+
+export interface TimelineItem {
+  id?: string;
+  scriptId: string;
+  tracks: TimelineTrackItem[];
+  totalDuration: number;
+  fps: number;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

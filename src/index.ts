@@ -30,7 +30,10 @@ import {
   getSFXCatalogController,
   generateSceneVideoController,
   getVideoJobStatusController,
-  updateMotionSettingsController
+  updateMotionSettingsController,
+  syncTimelineController,
+  getTimelineController,
+  updateTimelineClipController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -85,6 +88,11 @@ app.get('/api/audio/sfx-catalog', getSFXCatalogController);
 app.post('/api/scenes/:id/generate-video', generateSceneVideoController);
 app.get('/api/jobs/video/:jobId', getVideoJobStatusController);
 app.post('/api/scenes/:id/motion-settings', updateMotionSettingsController);
+
+// API Routes - Sprint 9
+app.post('/api/timeline/sync', syncTimelineController);
+app.get('/api/timeline/:scriptId', getTimelineController);
+app.put('/api/timeline/clips/:clipId', updateTimelineClipController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

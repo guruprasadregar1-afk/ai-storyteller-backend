@@ -285,3 +285,15 @@ model VideoMotion {
 
   @@map("video_motions")
 }
+
+model Timeline {
+  id               String   @id @default(uuid())
+  scriptId         String   @unique
+  tracks           Json     // Array of track metadata with clips
+  totalDuration    Float    @default(0.0)
+  fps              Int      @default(30)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("timelines")
+}

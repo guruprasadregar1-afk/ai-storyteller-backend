@@ -12,6 +12,7 @@ import { ImageService } from '../services/ImageService';
 import { VoiceService } from '../services/VoiceService';
 import { AudioService } from '../services/AudioService';
 import { VideoService } from '../services/VideoService';
+import { TimelineService } from '../services/TimelineService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -26,6 +27,7 @@ const imageService = new ImageService();
 const voiceService = new VoiceService();
 const audioService = new AudioService();
 const videoService = new VideoService();
+const timelineService = new TimelineService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -472,6 +474,58 @@ export const updateMotionSettingsController = async (req: Request, res: Response
     }
 
     return res.json({ sceneId: id, motion: updated });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 9 Controllers: Multi-Track Timeline & Audio-Visual Sync Engine
+export const syncTimelineController = async (req: Request, res: Response) => {
+  try {
+    const { scriptId, sceneClips = [], narrationClips = [], musicTrackUrl } = req.body;
+    if (!scriptId) {
+      return res.status(400).json({ error: 'scriptId parameter is required.' });
+    }
+
+    const timeline = await timelineService.syncScriptTimeline(scriptId, sceneClips, narrationClips, musicTrackUrl);
+    const drift = timelineService.detectAudioVisualDrift(timeline);
+
+    return res.json({ timeline, drift });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getTimelineController = async (req: Request, res: Response) => {
+  try {
+    const { scriptId } = req.params;
+    const timeline = await timelineService.getTimelineByScriptId(scriptId);
+
+    if (!timeline) {
+      return res.status(404).json({ error: 'Timeline not found for scriptId.' });
+    }
+
+    return res.json({ timeline });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateTimelineClipController = async (req: Request, res: Response) => {
+  try {
+    const { clipId } = req.params;
+    const { scriptId, startTimeSeconds, durationSeconds } = req.body;
+
+    if (!scriptId || startTimeSeconds === undefined || durationSeconds === undefined) {
+      return res.status(400).json({ error: 'scriptId, startTimeSeconds, and durationSeconds are required.' });
+    }
+
+    const clip = await timelineService.updateClipSettings(scriptId, clipId, Number(startTimeSeconds), Number(durationSeconds));
+    if (!clip) {
+      return res.status(404).json({ error: 'Clip not found in timeline.' });
+    }
+
+    return res.json({ clipId, clip });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }
