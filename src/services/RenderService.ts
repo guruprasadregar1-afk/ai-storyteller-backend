@@ -18,7 +18,7 @@ export class RenderService {
       fps,
       progressPercent: 100,
       status: 'COMPLETED',
-      outputVideoUrl: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4`,
+      outputVideoUrl: `https://vjs.zencdn.net/v/oceans.mp4`,
       renderTimeMs: 4200
     };
 

@@ -20,7 +20,7 @@ export class ExportService {
       targetPlatform,
       width: dims.width,
       height: dims.height,
-      exportUrl: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4?format=${aspectRatio.replace(':', 'x')}`,
+      exportUrl: `https://vjs.zencdn.net/v/oceans.mp4`,
       hashtags
     };
 

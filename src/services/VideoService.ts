@@ -18,7 +18,7 @@ export class VideoService {
       id: `vid-${Date.now()}`,
       sceneId,
       sourceImageUrl,
-      videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+      videoUrl: 'https://vjs.zencdn.net/v/oceans.mp4',
       motionType,
       motionStrength,
       provider,

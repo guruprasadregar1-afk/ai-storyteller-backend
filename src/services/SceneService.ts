@@ -22,6 +22,35 @@ export class SceneService {
     // Persist to Prisma DB
     if (prismaService.isAvailable) {
       try {
+        // Ensure default parent ContentSource exists
+        const defaultSourceId = 'default-source';
+        await prismaService.contentSource.upsert({
+          where: { id: defaultSourceId },
+          update: {},
+          create: {
+            id: defaultSourceId,
+            title: 'Default Content Source',
+            normalizedTitle: 'default content source',
+            contentType: 'MOVIE',
+            rightsStatus: 'PUBLIC_DOMAIN'
+          }
+        });
+
+        // Ensure parent StorytellingScript exists
+        await prismaService.storytellingScript.upsert({
+          where: { id: scriptId },
+          update: {},
+          create: {
+            id: scriptId,
+            contentSourceId: defaultSourceId,
+            mode: 'SHORT_SUMMARY',
+            language: 'English',
+            script: scriptText,
+            model: 'gemini-1.5-flash',
+            provider: 'gemini'
+          }
+        });
+
         for (const beat of hydratedBeats) {
           await prismaService.sceneBeat.upsert({
             where: { id: beat.id },
@@ -45,8 +74,8 @@ export class SceneService {
           });
         }
         console.log(`[SceneService] Persisted ${hydratedBeats.length} scene beats for script '${scriptId}' to Prisma Database.`);
-      } catch {
-        // In-memory fallback
+      } catch (err) {
+        console.warn(`[SceneService] Database persist warning:`, err);
       }
     }
 
