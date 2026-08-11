@@ -5,14 +5,14 @@ import { validateEnv } from './config/env.validation';
 import { prismaService } from './database/prisma/prisma.service';
 import { errorHandlerMiddleware } from './common/errors/api.error';
 
-import { healthRouter } from './modules/health/health.module';
-import { aiRouter } from './modules/ai/ai.module';
-import { authRouter } from './modules/auth/auth.module';
-import { usersRouter } from './modules/users/users.module';
-import { researchRouter } from './modules/research/research.module';
-import { sourcesRouter } from './modules/sources/sources.module';
-import { searchRouter } from './modules/search/search.module';
-import { storytellingRouter } from './modules/storytelling/storytelling.module';
+import { healthRouter } from './modules/health/health.routes';
+import { aiRouter } from './modules/ai/ai.routes';
+import { authRouter } from './modules/auth/auth.routes';
+import { usersRouter } from './modules/users/users.routes';
+import { researchRouter } from './modules/research/research.routes';
+import { sourcesRouter } from './modules/sources/sources.routes';
+import { searchRouter } from './modules/search/search.routes';
+import { storytellingRouter } from './modules/storytelling/storytelling.routes';
 
 export class AppModule {
   public app: Express;
