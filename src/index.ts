@@ -42,7 +42,9 @@ import {
   cancelRenderJobController,
   enqueueJobController,
   getJobStatusController,
-  registerWebhookController
+  registerWebhookController,
+  exportSocialVideoController,
+  getExportFormatsController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -117,6 +119,10 @@ app.post('/api/render/:jobId/cancel', cancelRenderJobController);
 app.post('/api/queue/jobs', enqueueJobController);
 app.get('/api/queue/jobs/:id', getJobStatusController);
 app.post('/api/webhooks/register', registerWebhookController);
+
+// API Routes - Sprint 13
+app.post('/api/export/social', exportSocialVideoController);
+app.get('/api/export/formats', getExportFormatsController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

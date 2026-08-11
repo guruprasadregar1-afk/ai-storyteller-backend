@@ -16,6 +16,7 @@ import { TimelineService } from '../services/TimelineService';
 import { SubtitleService } from '../services/SubtitleService';
 import { RenderService } from '../services/RenderService';
 import { QueueService } from '../services/QueueService';
+import { ExportService } from '../services/ExportService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -34,6 +35,7 @@ const timelineService = new TimelineService();
 const subtitleService = new SubtitleService();
 const renderService = new RenderService();
 const queueService = new QueueService();
+const exportService = new ExportService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -677,6 +679,30 @@ export const registerWebhookController = async (req: Request, res: Response) => 
 
     const webhook = queueService.registerWebhook(event, url);
     return res.status(201).json({ webhook });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 13 Controllers: Aspect Ratio, Social Export & Multi-Format Video Adapter
+export const exportSocialVideoController = async (req: Request, res: Response) => {
+  try {
+    const { scriptId, aspectRatio = '16:9', targetPlatform = 'YouTube' } = req.body;
+    if (!scriptId) {
+      return res.status(400).json({ error: 'scriptId parameter is required.' });
+    }
+
+    const exportItem = await exportService.adaptForSocial(scriptId, aspectRatio, targetPlatform);
+    return res.status(201).json({ export: exportItem });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getExportFormatsController = async (req: Request, res: Response) => {
+  try {
+    const formats = exportService.getAvailableFormats();
+    return res.json({ formats });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

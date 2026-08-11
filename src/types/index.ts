@@ -224,6 +224,17 @@ export interface QueueJobItem {
   lastError?: string;
 }
 
+export interface SocialExportItem {
+  id?: string;
+  scriptId: string;
+  aspectRatio: '16:9' | '9:16' | '1:1' | '4:5';
+  targetPlatform: string;
+  width: number;
+  height: number;
+  exportUrl: string;
+  hashtags: string[];
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

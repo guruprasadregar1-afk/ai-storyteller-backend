@@ -337,3 +337,17 @@ model JobQueue {
 
   @@map("job_queues")
 }
+
+model SocialExport {
+  id               String   @id @default(uuid())
+  scriptId         String
+  aspectRatio      String   @default("16:9") // 16:9 | 9:16 | 1:1 | 4:5
+  targetPlatform   String   @default("YouTube") // YouTube | TikTok | Instagram | Reels | Shorts
+  width            Int      @default(1920)
+  height           Int      @default(1080)
+  exportUrl        String
+  hashtags         String[]
+  createdAt        DateTime @default(now())
+
+  @@map("social_exports")
+}
