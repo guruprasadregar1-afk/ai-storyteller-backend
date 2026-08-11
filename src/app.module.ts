@@ -39,6 +39,7 @@ export class AppModule {
     this.app.use('/api', researchRouter);
     this.app.use('/api', sourcesRouter);
     this.app.use('/api', searchRouter);
+    this.app.use('/api/storytelling', storytellingRouter);
     this.app.use('/api', storytellingRouter);
   }
 

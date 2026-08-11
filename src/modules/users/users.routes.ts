@@ -15,5 +15,7 @@ usersRouter.post('/workspaces/:id/members', addWorkspaceMemberController);
 usersRouter.get('/workspaces/:id/permissions', checkWorkspacePermissionsController);
 
 usersRouter.get('/billing/subscription', getSubscriptionController);
-usersRouter.post('/billing/checkout', createCheckoutSessionController);
 usersRouter.get('/billing/usage', getUsageController);
+usersRouter.get('/users/:userId/usage', getUsageController);
+usersRouter.get('/users/usage', getUsageController);
+usersRouter.post('/billing/checkout', createCheckoutSessionController);

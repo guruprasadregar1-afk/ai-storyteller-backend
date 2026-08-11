@@ -104,21 +104,25 @@ storytellingRouter.put('/scripts/:id/scenes/:sceneId', updateSceneBeatController
 
 // Styles & Environments
 storytellingRouter.get('/styles', getStylePresetsController);
+storytellingRouter.get('/styles/presets', getStylePresetsController);
 storytellingRouter.post('/styles/preset', createStylePresetController);
 storytellingRouter.post('/environments/generate', generateEnvironmentRefController);
 
 // Keyframe Images
 storytellingRouter.post('/scenes/:id/generate-image', generateSceneImageController);
+storytellingRouter.post('/scenes/:id/image', generateSceneImageController);
 storytellingRouter.post('/scenes/batch-generate', startBatchImageGenerationController);
 storytellingRouter.get('/jobs/images/:jobId', getImageJobStatusController);
 
 // Voice Synthesis & Dialogue
 storytellingRouter.post('/narrator/synthesize', synthesizeNarratorController);
+storytellingRouter.post('/voice/synthesize', synthesizeNarratorController);
 storytellingRouter.post('/dialogue/synthesize', synthesizeDialogueController);
 storytellingRouter.get('/voices/catalog', getVoiceCatalogController);
 
 // Audio & Soundtrack
 storytellingRouter.post('/audio/recommend-music', recommendMusicController);
+storytellingRouter.post('/audio/music', recommendMusicController);
 storytellingRouter.post('/audio/mix', mixAudioController);
 storytellingRouter.get('/audio/sfx-catalog', getSFXCatalogController);
 
@@ -129,11 +133,13 @@ storytellingRouter.post('/scenes/:id/motion-settings', updateMotionSettingsContr
 
 // Multi-Track Timeline
 storytellingRouter.post('/timeline/sync', syncTimelineController);
+storytellingRouter.post('/scripts/:id/timeline', syncTimelineController);
 storytellingRouter.get('/timeline/:scriptId', getTimelineController);
 storytellingRouter.put('/timeline/clips/:clipId', updateTimelineClipController);
 
 // Subtitles
 storytellingRouter.post('/subtitles/generate', generateSubtitlesController);
+storytellingRouter.post('/scripts/:id/subtitles', generateSubtitlesController);
 storytellingRouter.post('/subtitles/translate', translateSubtitlesController);
 storytellingRouter.get('/subtitles/export/:scriptId', exportSubtitlesController);
 
@@ -154,6 +160,7 @@ storytellingRouter.get('/export/formats', getExportFormatsController);
 // Prompt Engineering Lab
 storytellingRouter.post('/prompts/templates', createPromptTemplateController);
 storytellingRouter.post('/prompts/optimize', optimizePromptController);
+storytellingRouter.post('/prompt/optimize', optimizePromptController);
 storytellingRouter.get('/prompts/templates', getPromptTemplatesController);
 
 // Realtime Collaboration
