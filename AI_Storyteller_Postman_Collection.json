@@ -1,0 +1,1083 @@
+{
+  "info": {
+    "name": "AI Storyteller Backend — Master API Collection (Sprints 1–20)",
+    "description": "Complete Postman collection covering all 20 Sprints of AI Storyteller Backend Engine.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3005",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Sprint 01 — Content Intelligence & Research",
+      "item": [
+        {
+          "name": "01. Analyze & Classify Content",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input\": \"Rani Lakshmibai\",\n  \"contentType\": \"Historical Event\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/content/analyze",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "content", "analyze"]
+            }
+          }
+        },
+        {
+          "name": "02. Search Content DB / Cache",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/content/search?q=titanic",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "content", "search"],
+              "query": [{ "key": "q", "value": "titanic" }]
+            }
+          }
+        },
+        {
+          "name": "03. Get Content Item by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/content/cnt-101",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "content", "cnt-101"]
+            }
+          }
+        },
+        {
+          "name": "04. Research Knowledge Grounding",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic\": \"Indian Rebellion of 1857 Siege of Jhansi\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/content/cnt-101/research",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "content", "cnt-101", "research"]
+            }
+          }
+        },
+        {
+          "name": "05. Generate Storytelling Script",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"narrativeVoice\": \"Dramatic Cinematic Narrator\",\n  \"facts\": [\"Siege of Jhansi Fort\", \"Rani's leap on horseback\"],\n  \"params\": { \"mode\": \"SHORT_SUMMARY\" }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/content/cnt-101/script",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "content", "cnt-101", "script"]
+            }
+          }
+        },
+        {
+          "name": "06. Extract Character Profiles",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/content/cnt-101/characters",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "content", "cnt-101", "characters"]
+            }
+          }
+        },
+        {
+          "name": "07. Match Narrator Profile",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/content/cnt-101/narrator",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "content", "cnt-101", "narrator"]
+            }
+          }
+        },
+        {
+          "name": "08. LLM Providers Health (Claude/Gemini/Groq)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/providers/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "providers", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 02 — Scene Beat Segmentation",
+      "item": [
+        {
+          "name": "01. Segment Script into Visual Beats",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scriptText\": \"In the heat of battle, Rani Lakshmibai strapped her adopted son Damodar to her back and galloped into the storm of cannon fire.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/scripts/script-101/segment",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scripts", "script-101", "segment"]
+            }
+          }
+        },
+        {
+          "name": "02. Get Script Scenes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/scripts/script-101/scenes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scripts", "script-101", "scenes"]
+            }
+          }
+        },
+        {
+          "name": "03. Update Scene Directives & Angles",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cameraDirective\": \"DRONE_PAN\",\n  \"lightingMood\": \"CINEMATIC_GOLDEN_HOUR\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/scripts/script-101/scenes/scene-101-1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scripts", "script-101", "scenes", "scene-101-1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 03 — Character Visual Bible & Consistency",
+      "item": [
+        {
+          "name": "01. Generate Character Visual Bible",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/characters/char-001/visuals",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "characters", "char-001", "visuals"]
+            }
+          }
+        },
+        {
+          "name": "02. Get Visual Bible & Face Embeddings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/characters/char-001/bible",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "characters", "char-001", "bible"]
+            }
+          }
+        },
+        {
+          "name": "03. Update Avatar Asset URL",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"avatarUrl\": \"https://cdn.ai-storyteller.internal/avatars/char-001-custom.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/characters/char-001/avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "characters", "char-001", "avatar"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 04 — Environment & Style Preset Engine",
+      "item": [
+        {
+          "name": "01. List Built-In Style Presets",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/styles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "styles"]
+            }
+          }
+        },
+        {
+          "name": "02. Create Custom Style Preset",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cybernetic Noir\",\n  \"promptPrefix\": \"Hyper-detailed cybernetic noir digital painting, 8k resolution\",\n  \"negativePrompt\": \"blurry, low contrast, oversaturated\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/styles/preset",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "styles", "preset"]
+            }
+          }
+        },
+        {
+          "name": "03. Generate Environment Reference Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"locationName\": \"Jhansi Fort Ramparts\",\n  \"styleName\": \"Historic Documentary\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/environments/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "environments", "generate"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 05 — Keyframe Image Generation Pipeline",
+      "item": [
+        {
+          "name": "01. Generate Scene Keyframe Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"visualPrompt\": \"Rani Lakshmibai standing on the fort ramparts, dramatic sunset, golden hour light\",\n  \"provider\": \"replicate-flux\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/scenes/scene-101/generate-image",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scenes", "scene-101", "generate-image"]
+            }
+          }
+        },
+        {
+          "name": "02. Batch Generate Scene Images",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sceneIds\": [\"scene-101\", \"scene-102\", \"scene-103\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/scenes/batch-generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scenes", "batch-generate"]
+            }
+          }
+        },
+        {
+          "name": "03. Get Image Job Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/images/job-img-12345",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", "images", "job-img-12345"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 06 — Voice Synthesis & Multi-Speaker Dialogue",
+      "item": [
+        {
+          "name": "01. Synthesize Narrator Speech (ElevenLabs)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Once upon a time in a kingdom surrounded by silver mist...\",\n  \"voiceId\": \"eleven-rachel\",\n  \"emotion\": \"dramatic\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/narrator/synthesize",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "narrator", "synthesize"]
+            }
+          }
+        },
+        {
+          "name": "02. Synthesize Multi-Speaker Dialogue",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"turns\": [\n    { \"speaker\": \"Rani\", \"voiceId\": \"eleven-rachel\", \"text\": \"We shall never surrender Jhansi!\" },\n    { \"speaker\": \"General\", \"voiceId\": \"eleven-antoni\", \"text\": \"Surrender the fortress at once!\" }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/dialogue/synthesize",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dialogue", "synthesize"]
+            }
+          }
+        },
+        {
+          "name": "03. Fetch Voice Catalog",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/voices/catalog",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "voices", "catalog"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 07 — Soundtrack, SFX & Audio Ducking",
+      "item": [
+        {
+          "name": "01. Recommend Background Music",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"moodOrGenre\": \"suspense horror\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/audio/recommend-music",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "audio", "recommend-music"]
+            }
+          }
+        },
+        {
+          "name": "02. Mix Audio & Apply Ducking (-14dB)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"narrationTrackUrl\": \"https://cdn.ai-storyteller.internal/audio/narration.mp3\",\n  \"musicTrackUrl\": \"https://cdn.ai-storyteller.internal/audio/epic-orchestra.mp3\",\n  \"duckingLevelDb\": -14\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/audio/mix",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "audio", "mix"]
+            }
+          }
+        },
+        {
+          "name": "03. Fetch SFX Catalog",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/audio/sfx-catalog",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "audio", "sfx-catalog"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 08 — Video Motion & Camera Animation",
+      "item": [
+        {
+          "name": "01. Generate Video Motion (Runway Gen-3)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cameraDirective\": \"PAN_RIGHT\",\n  \"motionStrength\": 5,\n  \"durationSeconds\": 4\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/scenes/scene-801/generate-video",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scenes", "scene-801", "generate-video"]
+            }
+          }
+        },
+        {
+          "name": "02. Get Video Generation Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/video/job-vid-998877",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", "video", "job-vid-998877"]
+            }
+          }
+        },
+        {
+          "name": "03. Update Motion Settings",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motionStrength\": 8,\n  \"cameraDirective\": \"ZOOM_IN\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/scenes/scene-801/motion-settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scenes", "scene-801", "motion-settings"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 09 — Multi-Track Timeline & Sync Engine",
+      "item": [
+        {
+          "name": "01. Sync Multi-Track Timeline",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scriptId\": \"script-901\",\n  \"sceneClips\": [\n    { \"id\": \"s1\", \"duration\": 5, \"videoUrl\": \"https://cdn.example.com/s1.mp4\", \"label\": \"Scene 1\" }\n  ],\n  \"narrationClips\": [\n    { \"id\": \"n1\", \"duration\": 5, \"audioUrl\": \"https://cdn.example.com/n1.mp3\", \"label\": \"Narrator Beat 1\" }\n  ],\n  \"musicTrackUrl\": \"https://cdn.example.com/music.mp3\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/timeline/sync",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "timeline", "sync"]
+            }
+          }
+        },
+        {
+          "name": "02. Get Timeline by Script ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/timeline/script-901",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "timeline", "script-901"]
+            }
+          }
+        },
+        {
+          "name": "03. Update Timeline Clip Duration/Offset",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startTimeSeconds\": 2,\n  \"durationSeconds\": 8\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/timeline/clips/clip-vid-s1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "timeline", "clips", "clip-vid-s1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 10 — Subtitles, Captions & Translation",
+      "item": [
+        {
+          "name": "01. Generate Subtitles (VTT/SRT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scriptId\": \"script-1001\",\n  \"narrationBeats\": [\n    { \"text\": \"In a land of mystery, a hero emerged.\", \"startTime\": 0, \"duration\": 4 }\n  ],\n  \"language\": \"English\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/subtitles/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "subtitles", "generate"]
+            }
+          }
+        },
+        {
+          "name": "02. Translate Subtitles",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scriptId\": \"script-1001\",\n  \"targetLanguage\": \"Hindi\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/subtitles/translate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "subtitles", "translate"]
+            }
+          }
+        },
+        {
+          "name": "03. Export Subtitles File",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/subtitles/export/script-1001?language=English&format=vtt",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "subtitles", "export", "script-1001"],
+              "query": [
+                { "key": "language", "value": "English" },
+                { "key": "format", "value": "vtt" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 11 — Final Video Assembly & Render",
+      "item": [
+        {
+          "name": "01. Start Cloud Render Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scriptId\": \"script-1101\",\n  \"resolution\": \"1080p\",\n  \"fps\": 30\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/render/start",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "render", "start"]
+            }
+          }
+        },
+        {
+          "name": "02. Get Render Job Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/render/job-render-12345",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "render", "job-render-12345"]
+            }
+          }
+        },
+        {
+          "name": "03. Cancel Active Render Job",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/render/job-render-12345/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "render", "job-render-12345", "cancel"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 12 — Job Queue & Webhook Infrastructure",
+      "item": [
+        {
+          "name": "01. Enqueue Background Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskName\": \"render_video_task\",\n  \"payload\": { \"scriptId\": \"script-1201\" },\n  \"webhookUrl\": \"https://webhook.site/test-12\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queue/jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queue", "jobs"]
+            }
+          }
+        },
+        {
+          "name": "02. Get Queue Job Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/queue/jobs/job-q-1001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queue", "jobs", "job-q-1001"]
+            }
+          }
+        },
+        {
+          "name": "03. Register Webhook Endpoint",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"video.rendered\",\n  \"targetUrl\": \"https://example.com/api/video-done\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/webhooks/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "webhooks", "register"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 13 — Social Aspect Ratio & Platform Export",
+      "item": [
+        {
+          "name": "01. Export Video for Social Platform",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scriptId\": \"script-1301\",\n  \"targetPlatform\": \"TikTok\",\n  \"aspectRatio\": \"9:16\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/export/social",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "export", "social"]
+            }
+          }
+        },
+        {
+          "name": "02. Get Supported Export Formats & Dimensions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/export/formats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "export", "formats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 14 — Prompt Engineering Lab",
+      "item": [
+        {
+          "name": "01. Create Prompt Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Photorealistic Historical Cinematic\",\n  \"category\": \"Cinematic\",\n  \"templateText\": \"A cinematic 8k shot of {subject} set in {location}, volumetric lighting\",\n  \"qualityTokens\": [\"photorealistic\", \"volumetric lighting\", \"8k resolution\", \"highly detailed\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/prompts/templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "prompts", "templates"]
+            }
+          }
+        },
+        {
+          "name": "02. Optimize Visual Prompt",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rawPrompt\": \"Hero standing on mountain peak\",\n  \"category\": \"Cinematic\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/prompts/optimize",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "prompts", "optimize"]
+            }
+          }
+        },
+        {
+          "name": "03. Fetch Prompt Templates Gallery",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/prompts/templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "prompts", "templates"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 15 — Collaborative Storyboarding Engine",
+      "item": [
+        {
+          "name": "01. Create Collaboration Room",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scriptId\": \"script-1501\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/collaboration/rooms",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "collaboration", "rooms"]
+            }
+          }
+        },
+        {
+          "name": "02. Lock Scene Element for Concurrency",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"elementId\": \"scene-101\",\n  \"userId\": \"user-alice\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/collaboration/rooms/room-script-1501/lock",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "collaboration", "rooms", "room-script-1501", "lock"]
+            }
+          }
+        },
+        {
+          "name": "03. Fetch Real-time Room Presence",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/collaboration/rooms/room-script-1501/presence",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "collaboration", "rooms", "room-script-1501", "presence"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 16 — Interactive Story Branching",
+      "item": [
+        {
+          "name": "01. Add Script Branch Node",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nodeId\": \"node-left\",\n  \"parentId\": \"root\",\n  \"choiceText\": \"Flee into the mountain pass\",\n  \"sceneContent\": \"The horse galloped up the icy mountain trail as arrows whistled past.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/scripts/script-1601/branches",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scripts", "script-1601", "branches"]
+            }
+          }
+        },
+        {
+          "name": "02. Fetch Script Branch Tree Graph",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/scripts/script-1601/tree",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scripts", "script-1601", "tree"]
+            }
+          }
+        },
+        {
+          "name": "03. Traverse Interactive Story Choices",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentNodeId\": \"root\",\n  \"choiceIndex\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/scripts/script-1601/choices",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scripts", "script-1601", "choices"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 17 — Multi-User Workspace & RBAC Engine",
+      "item": [
+        {
+          "name": "01. Create Team Workspace",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pixar AI Team\",\n  \"ownerEmail\": \"admin@pixar.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/workspaces",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "workspaces"]
+            }
+          }
+        },
+        {
+          "name": "02. Add Workspace Member & Assign Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userEmail\": \"editor@pixar.com\",\n  \"role\": \"EDITOR\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/workspaces/ws-1001/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "workspaces", "ws-1001", "members"]
+            }
+          }
+        },
+        {
+          "name": "03. Check Role Permission Rights",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/workspaces/ws-1001/permissions?userEmail=editor@pixar.com&permission=EDIT_SCRIPT",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "workspaces", "ws-1001", "permissions"],
+              "query": [
+                { "key": "userEmail", "value": "editor@pixar.com" },
+                { "key": "permission", "value": "EDIT_SCRIPT" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 18 — Monetization & Billing Engine",
+      "item": [
+        {
+          "name": "01. Get User Subscription Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/billing/subscription?userId=user-1801",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "billing", "subscription"],
+              "query": [{ "key": "userId", "value": "user-1801" }]
+            }
+          }
+        },
+        {
+          "name": "02. Create Checkout Session (Stripe)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user-1801\",\n  \"targetTier\": \"PRO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/billing/checkout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "billing", "checkout"]
+            }
+          }
+        },
+        {
+          "name": "03. Fetch Token Quota & Usage Meter",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/billing/usage?userId=user-1801",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "billing", "usage"],
+              "query": [{ "key": "userId", "value": "user-1801" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 19 — Analytics & Retention Heatmap Engine",
+      "item": [
+        {
+          "name": "01. Log Viewership Telemetry Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scriptId\": \"script-1901\",\n  \"eventType\": \"PLAY\",\n  \"watchTimeSeconds\": 15,\n  \"sceneId\": \"scene-1\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "events"]
+            }
+          }
+        },
+        {
+          "name": "02. Get Audience Retention Heatmap",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/heatmaps/script-1901",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "heatmaps", "script-1901"]
+            }
+          }
+        },
+        {
+          "name": "03. Run A/B Experiment Variant Selector",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"experimentId\": \"exp-thumb-01\",\n  \"variants\": [\"Variant-A\", \"Variant-B\", \"Variant-C\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/experiments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "experiments"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sprint 20 — Master Orchestrator, Security & Diagnostics",
+      "item": [
+        {
+          "name": "01. Run End-to-End Production Pipeline",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titleInput\": \"Rani Lakshmibai\",\n  \"contentType\": \"HISTORY\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pipeline/run",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pipeline", "run"]
+            }
+          }
+        },
+        {
+          "name": "02. Fetch Security Audit Trail Logs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/security/audit-logs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "security", "audit-logs"]
+            }
+          }
+        },
+        {
+          "name": "03. Get System Health & Performance Diagnostics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/system/diagnostics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "system", "diagnostics"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
