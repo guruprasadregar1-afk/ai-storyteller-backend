@@ -257,3 +257,16 @@ model VoiceSynthesis {
 
   @@map("voice_syntheses")
 }
+
+model AudioTrack {
+  id               String   @id @default(uuid())
+  title            String
+  trackType        String   @default("MUSIC") // MUSIC | SFX | AMBIENT
+  genreOrMood      String
+  audioUrl         String
+  durationSeconds  Float    @default(30.0)
+  duckingDb        Float    @default(-12.0)
+  createdAt        DateTime @default(now())
+
+  @@map("audio_tracks")
+}

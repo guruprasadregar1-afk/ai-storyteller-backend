@@ -10,6 +10,7 @@ import { SceneService } from '../services/SceneService';
 import { StyleService } from '../services/StyleService';
 import { ImageService } from '../services/ImageService';
 import { VoiceService } from '../services/VoiceService';
+import { AudioService } from '../services/AudioService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -22,6 +23,7 @@ const sceneService = new SceneService(aiManager);
 const styleService = new StyleService();
 const imageService = new ImageService();
 const voiceService = new VoiceService();
+const audioService = new AudioService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -387,6 +389,40 @@ export const getVoiceCatalogController = async (req: Request, res: Response) => 
   try {
     const voices = voiceService.getVoiceCatalog();
     return res.json({ voices });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 7 Controllers: Soundtrack, Ambient Sound & SFX Engine
+export const recommendMusicController = async (req: Request, res: Response) => {
+  try {
+    const { moodOrGenre = 'cinematic epic' } = req.body;
+    const music = audioService.recommendMusic(moodOrGenre);
+    return res.json({ music });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const mixAudioController = async (req: Request, res: Response) => {
+  try {
+    const { narrationTrackUrl, musicTrackUrl, sfxTrackUrls = [], duckingLevelDb = -14.0 } = req.body;
+    if (!narrationTrackUrl || !musicTrackUrl) {
+      return res.status(400).json({ error: 'narrationTrackUrl and musicTrackUrl are required.' });
+    }
+
+    const mixConfig = audioService.mixAudioTracks(narrationTrackUrl, musicTrackUrl, sfxTrackUrls, Number(duckingLevelDb));
+    return res.json({ mix: mixConfig });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getSFXCatalogController = async (req: Request, res: Response) => {
+  try {
+    const sfx = audioService.getSFXCatalog();
+    return res.json({ sfx });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

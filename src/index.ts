@@ -24,7 +24,10 @@ import {
   getImageJobStatusController,
   synthesizeNarratorController,
   synthesizeDialogueController,
-  getVoiceCatalogController
+  getVoiceCatalogController,
+  recommendMusicController,
+  mixAudioController,
+  getSFXCatalogController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -69,6 +72,11 @@ app.get('/api/jobs/images/:jobId', getImageJobStatusController);
 app.post('/api/narrator/synthesize', synthesizeNarratorController);
 app.post('/api/dialogue/synthesize', synthesizeDialogueController);
 app.get('/api/voices/catalog', getVoiceCatalogController);
+
+// API Routes - Sprint 7
+app.post('/api/audio/recommend-music', recommendMusicController);
+app.post('/api/audio/mix', mixAudioController);
+app.get('/api/audio/sfx-catalog', getSFXCatalogController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

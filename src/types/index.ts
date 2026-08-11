@@ -122,6 +122,25 @@ export interface VoiceCatalogItem {
   sampleUrl: string;
 }
 
+export interface AudioTrackItem {
+  id?: string;
+  title: string;
+  trackType: 'MUSIC' | 'SFX' | 'AMBIENT';
+  genreOrMood: string;
+  audioUrl: string;
+  durationSeconds: number;
+  duckingDb: number;
+}
+
+export interface AudioMixConfig {
+  narrationTrackUrl: string;
+  musicTrackUrl: string;
+  sfxTrackUrls?: string[];
+  duckingLevelDb: number;
+  outputMixedUrl: string;
+  totalDurationSeconds: number;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';
