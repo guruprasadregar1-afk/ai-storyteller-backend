@@ -399,3 +399,15 @@ model Workspace {
 
   @@map("workspaces")
 }
+
+model Subscription {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  tier             String   @default("FREE") // FREE | PRO | ENTERPRISE
+  tokenQuota       Int      @default(1000)
+  tokensUsed       Int      @default(0)
+  status           String   @default("ACTIVE")
+  createdAt        DateTime @default(now())
+
+  @@map("subscriptions")
+}

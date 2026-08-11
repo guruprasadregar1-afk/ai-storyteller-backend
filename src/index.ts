@@ -56,7 +56,10 @@ import {
   traverseScriptChoicesController,
   createWorkspaceController,
   addWorkspaceMemberController,
-  checkWorkspacePermissionsController
+  checkWorkspacePermissionsController,
+  getSubscriptionController,
+  createCheckoutSessionController,
+  getUsageController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -155,6 +158,11 @@ app.post('/api/scripts/:id/choices', traverseScriptChoicesController);
 app.post('/api/workspaces', createWorkspaceController);
 app.post('/api/workspaces/:id/members', addWorkspaceMemberController);
 app.get('/api/workspaces/:id/permissions', checkWorkspacePermissionsController);
+
+// API Routes - Sprint 18
+app.get('/api/billing/subscription', getSubscriptionController);
+app.post('/api/billing/checkout', createCheckoutSessionController);
+app.get('/api/billing/usage', getUsageController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

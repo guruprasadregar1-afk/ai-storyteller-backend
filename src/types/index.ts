@@ -298,6 +298,22 @@ export interface WorkspaceItem {
   inviteCode: string;
 }
 
+export interface SubscriptionItem {
+  id?: string;
+  userId: string;
+  tier: 'FREE' | 'PRO' | 'ENTERPRISE';
+  tokenQuota: number;
+  tokensUsed: number;
+  status: 'ACTIVE' | 'CANCELLED' | 'PAST_DUE';
+}
+
+export interface CheckoutSessionItem {
+  checkoutUrl: string;
+  sessionId: string;
+  tier: 'FREE' | 'PRO' | 'ENTERPRISE';
+  amountUsd: number;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

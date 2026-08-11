@@ -21,6 +21,7 @@ import { PromptLabService } from '../services/PromptLabService';
 import { CollaborationService } from '../services/CollaborationService';
 import { BranchingService } from '../services/BranchingService';
 import { WorkspaceService } from '../services/WorkspaceService';
+import { BillingService } from '../services/BillingService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -44,6 +45,7 @@ const promptLabService = new PromptLabService();
 const collaborationService = new CollaborationService();
 const branchingService = new BranchingService();
 const workspaceService = new WorkspaceService();
+const billingService = new BillingService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -894,6 +896,41 @@ export const checkWorkspacePermissionsController = async (req: Request, res: Res
 
     const allowed = workspaceService.hasPermission(id, String(userId), action as any);
     return res.json({ workspaceId: id, userId, action, allowed });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 18 Controllers: Monetization, Subscription Tiers & Billing Gateway
+export const getSubscriptionController = async (req: Request, res: Response) => {
+  try {
+    const { userId = 'user-default' } = req.query;
+    const subscription = billingService.getSubscription(String(userId));
+    return res.json({ subscription });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const createCheckoutSessionController = async (req: Request, res: Response) => {
+  try {
+    const { userId, targetTier = 'PRO' } = req.body;
+    if (!userId) {
+      return res.status(400).json({ error: 'userId parameter is required.' });
+    }
+
+    const session = billingService.createCheckoutSession(userId, targetTier);
+    return res.status(201).json({ session });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getUsageController = async (req: Request, res: Response) => {
+  try {
+    const { userId = 'user-default' } = req.query;
+    const usage = billingService.getUsage(String(userId));
+    return res.json({ usage });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }
