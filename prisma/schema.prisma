@@ -422,3 +422,27 @@ model AnalyticsEvent {
 
   @@map("analytics_events")
 }
+
+model MasterPipeline {
+  id               String   @id @default(uuid())
+  titleInput       String
+  contentType      String   @default("Movie")
+  status           String   @default("COMPLETED")
+  scriptId         String?
+  videoId          String?
+  renderUrl        String?
+  totalDurationMs  Int      @default(0)
+  createdAt        DateTime @default(now())
+
+  @@map("master_pipelines")
+}
+
+model AuditLog {
+  id               String   @id @default(uuid())
+  userId           String
+  action           String
+  ipAddress        String   @default("127.0.0.1")
+  timestamp        DateTime @default(now())
+
+  @@map("audit_logs")
+}

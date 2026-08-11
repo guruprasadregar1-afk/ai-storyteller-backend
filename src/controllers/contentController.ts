@@ -23,6 +23,8 @@ import { BranchingService } from '../services/BranchingService';
 import { WorkspaceService } from '../services/WorkspaceService';
 import { BillingService } from '../services/BillingService';
 import { AnalyticsService } from '../services/AnalyticsService';
+import { SecurityService } from '../services/SecurityService';
+import { MasterOrchestratorService } from '../services/MasterOrchestratorService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -48,6 +50,20 @@ const branchingService = new BranchingService();
 const workspaceService = new WorkspaceService();
 const billingService = new BillingService();
 const analyticsService = new AnalyticsService();
+const securityService = new SecurityService();
+const masterOrchestratorService = new MasterOrchestratorService(
+  contentService,
+  scriptService,
+  sceneService,
+  characterService,
+  imageService,
+  voiceService,
+  audioService,
+  videoService,
+  timelineService,
+  subtitleService,
+  renderService
+);
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -978,6 +994,42 @@ export const runABExperimentController = async (req: Request, res: Response) => 
 
     const experiment = analyticsService.selectVariant(experimentId, variants);
     return res.json({ experiment });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 20 Controllers: Full Production Release, Security Hardening & Orchestrator
+export const runMasterPipelineController = async (req: Request, res: Response) => {
+  try {
+    const { titleInput, contentType = 'Movie' } = req.body;
+    if (!titleInput) {
+      return res.status(400).json({ error: 'titleInput parameter is required.' });
+    }
+
+    const sanitizedTitle = securityService.sanitizeInput(titleInput);
+    securityService.logAudit('anonymous-user', `RUN_PIPELINE_${sanitizedTitle}`);
+
+    const pipeline = await masterOrchestratorService.runFullProductionPipeline(sanitizedTitle, contentType);
+    return res.status(201).json({ pipeline });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getAuditLogsController = async (req: Request, res: Response) => {
+  try {
+    const auditLogs = securityService.getAuditLogs();
+    return res.json({ auditLogs });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getDiagnosticsController = async (req: Request, res: Response) => {
+  try {
+    const diagnostics = securityService.getDiagnostics();
+    return res.json({ diagnostics });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

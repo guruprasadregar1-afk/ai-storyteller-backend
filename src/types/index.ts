@@ -329,6 +329,34 @@ export interface RetentionHeatmap {
   sceneRetention: Array<{ sceneId: string; retentionPercent: number }>;
 }
 
+export interface MasterPipelineResult {
+  pipelineId: string;
+  titleInput: string;
+  contentType: string;
+  status: 'QUEUED' | 'RUNNING' | 'COMPLETED' | 'FAILED';
+  scriptId: string;
+  sceneCount: number;
+  audioTrackCount: number;
+  renderUrl: string;
+  totalDurationMs: number;
+}
+
+export interface AuditLogItem {
+  id?: string;
+  userId: string;
+  action: string;
+  ipAddress: string;
+  timestamp?: Date;
+}
+
+export interface SystemDiagnostics {
+  status: 'HEALTHY' | 'DEGRADED';
+  version: string;
+  activeServices: string[];
+  uptimeSeconds: number;
+  memoryUsageMb: number;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

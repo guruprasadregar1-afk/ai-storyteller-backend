@@ -62,7 +62,10 @@ import {
   getUsageController,
   logAnalyticsEventController,
   getRetentionHeatmapController,
-  runABExperimentController
+  runABExperimentController,
+  runMasterPipelineController,
+  getAuditLogsController,
+  getDiagnosticsController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -171,6 +174,11 @@ app.get('/api/billing/usage', getUsageController);
 app.post('/api/analytics/events', logAnalyticsEventController);
 app.get('/api/analytics/heatmaps/:scriptId', getRetentionHeatmapController);
 app.post('/api/analytics/experiments', runABExperimentController);
+
+// API Routes - Sprint 20
+app.post('/api/pipeline/run', runMasterPipelineController);
+app.get('/api/security/audit-logs', getAuditLogsController);
+app.get('/api/system/diagnostics', getDiagnosticsController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });
