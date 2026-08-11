@@ -363,3 +363,15 @@ model PromptTemplate {
 
   @@map("prompt_templates")
 }
+
+model CollaborationSession {
+  id               String   @id @default(uuid())
+  roomId           String   @unique
+  scriptId         String
+  activeUsers      Json     // Array of { userId, userName, role, status }
+  elementLocks     Json     // Record of elementId -> userId
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("collaboration_sessions")
+}

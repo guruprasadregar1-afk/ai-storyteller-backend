@@ -47,7 +47,10 @@ import {
   getExportFormatsController,
   createPromptTemplateController,
   optimizePromptController,
-  getPromptTemplatesController
+  getPromptTemplatesController,
+  createCollabRoomController,
+  lockCollabElementController,
+  getCollabPresenceController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -131,6 +134,11 @@ app.get('/api/export/formats', getExportFormatsController);
 app.post('/api/prompts/templates', createPromptTemplateController);
 app.post('/api/prompts/optimize', optimizePromptController);
 app.get('/api/prompts/templates', getPromptTemplatesController);
+
+// API Routes - Sprint 15
+app.post('/api/collaboration/rooms', createCollabRoomController);
+app.post('/api/collaboration/rooms/:id/lock', lockCollabElementController);
+app.get('/api/collaboration/rooms/:id/presence', getCollabPresenceController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

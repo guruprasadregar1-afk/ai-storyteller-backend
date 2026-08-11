@@ -18,6 +18,7 @@ import { RenderService } from '../services/RenderService';
 import { QueueService } from '../services/QueueService';
 import { ExportService } from '../services/ExportService';
 import { PromptLabService } from '../services/PromptLabService';
+import { CollaborationService } from '../services/CollaborationService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -38,6 +39,7 @@ const renderService = new RenderService();
 const queueService = new QueueService();
 const exportService = new ExportService();
 const promptLabService = new PromptLabService();
+const collaborationService = new CollaborationService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -750,6 +752,47 @@ export const getPromptTemplatesController = async (req: Request, res: Response) 
   try {
     const templates = promptLabService.getTemplates();
     return res.json({ templates });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 15 Controllers: Collaborative Storyboarding & Real-Time Multiplayer Engine
+export const createCollabRoomController = async (req: Request, res: Response) => {
+  try {
+    const { scriptId } = req.body;
+    if (!scriptId) {
+      return res.status(400).json({ error: 'scriptId parameter is required.' });
+    }
+
+    const room = collaborationService.createRoom(scriptId);
+    return res.status(201).json({ room });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const lockCollabElementController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // roomId
+    const { elementId, userId } = req.body;
+
+    if (!elementId || !userId) {
+      return res.status(400).json({ error: 'elementId and userId parameters are required.' });
+    }
+
+    const lockResult = collaborationService.lockElement(id, elementId, userId);
+    return res.json(lockResult);
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getCollabPresenceController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // roomId
+    const activeUsers = collaborationService.getPresence(id);
+    return res.json({ roomId: id, activeUsers });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

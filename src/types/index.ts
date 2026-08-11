@@ -252,6 +252,21 @@ export interface PromptOptimizationResult {
   variations: string[];
 }
 
+export interface CollabUser {
+  userId: string;
+  userName: string;
+  role: 'EDITOR' | 'VIEWER' | 'ADMIN';
+  status: 'ONLINE' | 'IDLE' | 'OFFLINE';
+}
+
+export interface CollabSessionItem {
+  id?: string;
+  roomId: string;
+  scriptId: string;
+  activeUsers: CollabUser[];
+  elementLocks: Record<string, string>; // elementId -> userId
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';
