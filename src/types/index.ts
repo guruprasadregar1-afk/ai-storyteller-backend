@@ -141,6 +141,26 @@ export interface AudioMixConfig {
   totalDurationSeconds: number;
 }
 
+export interface VideoMotionItem {
+  id?: string;
+  sceneId: string;
+  sourceImageUrl: string;
+  videoUrl: string;
+  motionType: 'PAN_LEFT' | 'PAN_RIGHT' | 'ZOOM_IN' | 'ZOOM_OUT' | 'ORBIT' | 'TILT_UP';
+  motionStrength: number;
+  provider: string;
+  durationSeconds: number;
+  status: 'QUEUED' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+}
+
+export interface VideoJobStatus {
+  jobId: string;
+  sceneId: string;
+  motion: VideoMotionItem;
+  progressPercent: number;
+  status: 'QUEUED' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

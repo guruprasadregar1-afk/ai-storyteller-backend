@@ -11,6 +11,7 @@ import { StyleService } from '../services/StyleService';
 import { ImageService } from '../services/ImageService';
 import { VoiceService } from '../services/VoiceService';
 import { AudioService } from '../services/AudioService';
+import { VideoService } from '../services/VideoService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -24,6 +25,7 @@ const styleService = new StyleService();
 const imageService = new ImageService();
 const voiceService = new VoiceService();
 const audioService = new AudioService();
+const videoService = new VideoService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -423,6 +425,53 @@ export const getSFXCatalogController = async (req: Request, res: Response) => {
   try {
     const sfx = audioService.getSFXCatalog();
     return res.json({ sfx });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 8 Controllers: Video Motion & Camera Animation Pipeline
+export const generateSceneVideoController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { sourceImageUrl = 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675', motionType = 'PAN_RIGHT', motionStrength = 5.0, provider = 'runway-gen3' } = req.body;
+
+    const job = await videoService.generateVideoMotion(id, sourceImageUrl, motionType, Number(motionStrength), provider);
+    return res.status(202).json({ job });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getVideoJobStatusController = async (req: Request, res: Response) => {
+  try {
+    const { jobId } = req.params;
+    const job = await videoService.getVideoJobStatus(jobId);
+
+    if (!job) {
+      return res.status(404).json({ error: 'Video generation job not found.' });
+    }
+
+    return res.json({ job });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateMotionSettingsController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { motionType, motionStrength } = req.body;
+    if (!motionType || motionStrength === undefined) {
+      return res.status(400).json({ error: 'motionType and motionStrength are required.' });
+    }
+
+    const updated = await videoService.updateMotionSettings(id, motionType, Number(motionStrength));
+    if (!updated) {
+      return res.status(404).json({ error: 'Video motion setting for scene not found.' });
+    }
+
+    return res.json({ sceneId: id, motion: updated });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

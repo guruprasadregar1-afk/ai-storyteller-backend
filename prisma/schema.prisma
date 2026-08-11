@@ -270,3 +270,18 @@ model AudioTrack {
 
   @@map("audio_tracks")
 }
+
+model VideoMotion {
+  id               String   @id @default(uuid())
+  sceneId          String
+  sourceImageUrl   String
+  videoUrl         String
+  motionType       String   @default("PAN_RIGHT") // PAN_LEFT | PAN_RIGHT | ZOOM_IN | ZOOM_OUT | ORBIT | TILT_UP
+  motionStrength   Float    @default(5.0)
+  provider         String   @default("runway-gen3")
+  durationSeconds  Float    @default(4.0)
+  status           String   @default("COMPLETED")
+  createdAt        DateTime @default(now())
+
+  @@map("video_motions")
+}

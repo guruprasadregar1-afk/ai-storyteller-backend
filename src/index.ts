@@ -27,7 +27,10 @@ import {
   getVoiceCatalogController,
   recommendMusicController,
   mixAudioController,
-  getSFXCatalogController
+  getSFXCatalogController,
+  generateSceneVideoController,
+  getVideoJobStatusController,
+  updateMotionSettingsController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -77,6 +80,11 @@ app.get('/api/voices/catalog', getVoiceCatalogController);
 app.post('/api/audio/recommend-music', recommendMusicController);
 app.post('/api/audio/mix', mixAudioController);
 app.get('/api/audio/sfx-catalog', getSFXCatalogController);
+
+// API Routes - Sprint 8
+app.post('/api/scenes/:id/generate-video', generateSceneVideoController);
+app.get('/api/jobs/video/:jobId', getVideoJobStatusController);
+app.post('/api/scenes/:id/motion-settings', updateMotionSettingsController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });
