@@ -375,3 +375,16 @@ model CollaborationSession {
 
   @@map("collaboration_sessions")
 }
+
+model ScriptBranch {
+  id               String   @id @default(uuid())
+  scriptId         String
+  nodeId           String
+  parentNodeId     String?
+  choiceLabel      String?
+  sceneContent     String   @db.Text
+  childNodeIds     String[]
+  createdAt        DateTime @default(now())
+
+  @@map("script_branches")
+}

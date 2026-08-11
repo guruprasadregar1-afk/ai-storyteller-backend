@@ -19,6 +19,7 @@ import { QueueService } from '../services/QueueService';
 import { ExportService } from '../services/ExportService';
 import { PromptLabService } from '../services/PromptLabService';
 import { CollaborationService } from '../services/CollaborationService';
+import { BranchingService } from '../services/BranchingService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -40,6 +41,7 @@ const queueService = new QueueService();
 const exportService = new ExportService();
 const promptLabService = new PromptLabService();
 const collaborationService = new CollaborationService();
+const branchingService = new BranchingService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -793,6 +795,52 @@ export const getCollabPresenceController = async (req: Request, res: Response) =
     const { id } = req.params; // roomId
     const activeUsers = collaborationService.getPresence(id);
     return res.json({ roomId: id, activeUsers });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 16 Controllers: Interactive Story Branching, Choice Nodes & CYOA Engine
+export const addScriptBranchController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // scriptId
+    const { nodeId, sceneContent, parentNodeId, choiceLabel } = req.body;
+
+    if (!nodeId || !sceneContent) {
+      return res.status(400).json({ error: 'nodeId and sceneContent parameters are required.' });
+    }
+
+    const branch = branchingService.addBranchNode(id, nodeId, sceneContent, parentNodeId, choiceLabel);
+    return res.status(201).json({ branch });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getScriptBranchTreeController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // scriptId
+    const { rootNodeId = 'root' } = req.query;
+
+    const tree = branchingService.getBranchTree(id, String(rootNodeId));
+    if (!tree) {
+      return res.status(404).json({ error: 'Branch tree root not found.' });
+    }
+
+    const leafEndings = branchingService.countLeafEndings(id);
+    return res.json({ tree, leafEndings });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const traverseScriptChoicesController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // scriptId
+    const { nodeIds = [] } = req.body;
+
+    const path = branchingService.traversePath(id, nodeIds);
+    return res.json({ scriptId: id, path });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

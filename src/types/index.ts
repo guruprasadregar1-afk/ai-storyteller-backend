@@ -267,6 +267,23 @@ export interface CollabSessionItem {
   elementLocks: Record<string, string>; // elementId -> userId
 }
 
+export interface ScriptBranchItem {
+  id?: string;
+  scriptId: string;
+  nodeId: string;
+  parentNodeId?: string;
+  choiceLabel?: string;
+  sceneContent: string;
+  childNodeIds: string[];
+}
+
+export interface BranchTreeNode {
+  nodeId: string;
+  choiceLabel?: string;
+  sceneContent: string;
+  children: BranchTreeNode[];
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

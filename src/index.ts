@@ -50,7 +50,10 @@ import {
   getPromptTemplatesController,
   createCollabRoomController,
   lockCollabElementController,
-  getCollabPresenceController
+  getCollabPresenceController,
+  addScriptBranchController,
+  getScriptBranchTreeController,
+  traverseScriptChoicesController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -139,6 +142,11 @@ app.get('/api/prompts/templates', getPromptTemplatesController);
 app.post('/api/collaboration/rooms', createCollabRoomController);
 app.post('/api/collaboration/rooms/:id/lock', lockCollabElementController);
 app.get('/api/collaboration/rooms/:id/presence', getCollabPresenceController);
+
+// API Routes - Sprint 16
+app.post('/api/scripts/:id/branches', addScriptBranchController);
+app.get('/api/scripts/:id/tree', getScriptBranchTreeController);
+app.post('/api/scripts/:id/choices', traverseScriptChoicesController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });
