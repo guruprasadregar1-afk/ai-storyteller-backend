@@ -20,6 +20,7 @@ import { ExportService } from '../services/ExportService';
 import { PromptLabService } from '../services/PromptLabService';
 import { CollaborationService } from '../services/CollaborationService';
 import { BranchingService } from '../services/BranchingService';
+import { WorkspaceService } from '../services/WorkspaceService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -42,6 +43,7 @@ const exportService = new ExportService();
 const promptLabService = new PromptLabService();
 const collaborationService = new CollaborationService();
 const branchingService = new BranchingService();
+const workspaceService = new WorkspaceService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -841,6 +843,57 @@ export const traverseScriptChoicesController = async (req: Request, res: Respons
 
     const path = branchingService.traversePath(id, nodeIds);
     return res.json({ scriptId: id, path });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 17 Controllers: Multi-User Workspace, Access Control & Permissions
+export const createWorkspaceController = async (req: Request, res: Response) => {
+  try {
+    const { name, ownerId, ownerEmail } = req.body;
+    if (!name || !ownerId || !ownerEmail) {
+      return res.status(400).json({ error: 'name, ownerId, and ownerEmail parameters are required.' });
+    }
+
+    const workspace = workspaceService.createWorkspace(name, ownerId, ownerEmail);
+    return res.status(201).json({ workspace });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const addWorkspaceMemberController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // workspaceId
+    const { userId, email, role = 'EDITOR' } = req.body;
+
+    if (!userId || !email) {
+      return res.status(400).json({ error: 'userId and email parameters are required.' });
+    }
+
+    const workspace = workspaceService.addMember(id, userId, email, role);
+    if (!workspace) {
+      return res.status(404).json({ error: 'Workspace not found.' });
+    }
+
+    return res.json({ workspace });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const checkWorkspacePermissionsController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // workspaceId
+    const { userId, action = 'VIEW' } = req.query;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'userId query parameter is required.' });
+    }
+
+    const allowed = workspaceService.hasPermission(id, String(userId), action as any);
+    return res.json({ workspaceId: id, userId, action, allowed });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

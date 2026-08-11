@@ -388,3 +388,14 @@ model ScriptBranch {
 
   @@map("script_branches")
 }
+
+model Workspace {
+  id               String   @id @default(uuid())
+  name             String
+  ownerId          String
+  members          Json     // Array of { userId, email, role: OWNER | ADMIN | EDITOR | VIEWER }
+  inviteCode       String   @unique
+  createdAt        DateTime @default(now())
+
+  @@map("workspaces")
+}

@@ -284,6 +284,20 @@ export interface BranchTreeNode {
   children: BranchTreeNode[];
 }
 
+export interface WorkspaceMember {
+  userId: string;
+  email: string;
+  role: 'OWNER' | 'ADMIN' | 'EDITOR' | 'VIEWER';
+}
+
+export interface WorkspaceItem {
+  id?: string;
+  name: string;
+  ownerId: string;
+  members: WorkspaceMember[];
+  inviteCode: string;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

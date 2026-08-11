@@ -53,7 +53,10 @@ import {
   getCollabPresenceController,
   addScriptBranchController,
   getScriptBranchTreeController,
-  traverseScriptChoicesController
+  traverseScriptChoicesController,
+  createWorkspaceController,
+  addWorkspaceMemberController,
+  checkWorkspacePermissionsController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -147,6 +150,11 @@ app.get('/api/collaboration/rooms/:id/presence', getCollabPresenceController);
 app.post('/api/scripts/:id/branches', addScriptBranchController);
 app.get('/api/scripts/:id/tree', getScriptBranchTreeController);
 app.post('/api/scripts/:id/choices', traverseScriptChoicesController);
+
+// API Routes - Sprint 17
+app.post('/api/workspaces', createWorkspaceController);
+app.post('/api/workspaces/:id/members', addWorkspaceMemberController);
+app.get('/api/workspaces/:id/permissions', checkWorkspacePermissionsController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });
