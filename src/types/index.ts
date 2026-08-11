@@ -186,6 +186,22 @@ export interface TimelineItem {
   fps: number;
 }
 
+export interface SubtitleCueItem {
+  startTimeSeconds: number;
+  endTimeSeconds: number;
+  text: string;
+  speaker?: string;
+}
+
+export interface SubtitleItem {
+  id?: string;
+  scriptId: string;
+  language: string;
+  cues: SubtitleCueItem[];
+  srtExportUrl?: string;
+  vttExportUrl?: string;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

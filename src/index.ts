@@ -33,7 +33,10 @@ import {
   updateMotionSettingsController,
   syncTimelineController,
   getTimelineController,
-  updateTimelineClipController
+  updateTimelineClipController,
+  generateSubtitlesController,
+  translateSubtitlesController,
+  exportSubtitlesController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -93,6 +96,11 @@ app.post('/api/scenes/:id/motion-settings', updateMotionSettingsController);
 app.post('/api/timeline/sync', syncTimelineController);
 app.get('/api/timeline/:scriptId', getTimelineController);
 app.put('/api/timeline/clips/:clipId', updateTimelineClipController);
+
+// API Routes - Sprint 10
+app.post('/api/subtitles/generate', generateSubtitlesController);
+app.post('/api/subtitles/translate', translateSubtitlesController);
+app.get('/api/subtitles/export/:scriptId', exportSubtitlesController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

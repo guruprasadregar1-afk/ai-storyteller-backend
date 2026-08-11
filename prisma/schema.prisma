@@ -297,3 +297,15 @@ model Timeline {
 
   @@map("timelines")
 }
+
+model Subtitle {
+  id               String   @id @default(uuid())
+  scriptId         String
+  language         String   @default("English")
+  cues             Json     // Array of { startTime, endTime, text }
+  srtExportUrl     String?
+  vttExportUrl     String?
+  createdAt        DateTime @default(now())
+
+  @@map("subtitles")
+}

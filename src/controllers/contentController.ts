@@ -13,6 +13,7 @@ import { VoiceService } from '../services/VoiceService';
 import { AudioService } from '../services/AudioService';
 import { VideoService } from '../services/VideoService';
 import { TimelineService } from '../services/TimelineService';
+import { SubtitleService } from '../services/SubtitleService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -28,6 +29,7 @@ const voiceService = new VoiceService();
 const audioService = new AudioService();
 const videoService = new VideoService();
 const timelineService = new TimelineService();
+const subtitleService = new SubtitleService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -526,6 +528,62 @@ export const updateTimelineClipController = async (req: Request, res: Response) 
     }
 
     return res.json({ clipId, clip });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 10 Controllers: Subtitle, Captioning & Multilingual Translation Engine
+export const generateSubtitlesController = async (req: Request, res: Response) => {
+  try {
+    const { scriptId, narrationBeats = [], language = 'English' } = req.body;
+    if (!scriptId || narrationBeats.length === 0) {
+      return res.status(400).json({ error: 'scriptId and non-empty narrationBeats array are required.' });
+    }
+
+    const subtitle = await subtitleService.generateSubtitles(scriptId, narrationBeats, language);
+    return res.json({ subtitle });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const translateSubtitlesController = async (req: Request, res: Response) => {
+  try {
+    const { scriptId, targetLanguage } = req.body;
+    if (!scriptId || !targetLanguage) {
+      return res.status(400).json({ error: 'scriptId and targetLanguage are required.' });
+    }
+
+    const translated = await subtitleService.translateSubtitles(scriptId, targetLanguage);
+    if (!translated) {
+      return res.status(404).json({ error: 'Source English subtitles not found for translation.' });
+    }
+
+    return res.json({ subtitle: translated });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const exportSubtitlesController = async (req: Request, res: Response) => {
+  try {
+    const { scriptId } = req.params;
+    const format = (req.query.format as string) || 'srt';
+    const lang = (req.query.lang as string) || 'English';
+
+    const sub = subtitleService.getSubtitles(scriptId, lang);
+    if (!sub) {
+      return res.status(404).json({ error: `Subtitles not found for script ${scriptId} in ${lang}.` });
+    }
+
+    if (format === 'vtt') {
+      res.setHeader('Content-Type', 'text/vtt');
+      return res.send(subtitleService.generateVTT(sub.cues));
+    } else {
+      res.setHeader('Content-Type', 'text/plain');
+      return res.send(subtitleService.generateSRT(sub.cues));
+    }
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }
