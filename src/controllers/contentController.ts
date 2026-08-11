@@ -22,6 +22,7 @@ import { CollaborationService } from '../services/CollaborationService';
 import { BranchingService } from '../services/BranchingService';
 import { WorkspaceService } from '../services/WorkspaceService';
 import { BillingService } from '../services/BillingService';
+import { AnalyticsService } from '../services/AnalyticsService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -46,6 +47,7 @@ const collaborationService = new CollaborationService();
 const branchingService = new BranchingService();
 const workspaceService = new WorkspaceService();
 const billingService = new BillingService();
+const analyticsService = new AnalyticsService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -931,6 +933,51 @@ export const getUsageController = async (req: Request, res: Response) => {
     const { userId = 'user-default' } = req.query;
     const usage = billingService.getUsage(String(userId));
     return res.json({ usage });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 19 Controllers: Analytics, Viewer Engagement & A/B Experimentation
+export const logAnalyticsEventController = async (req: Request, res: Response) => {
+  try {
+    const { scriptId, eventType, watchTimeSeconds = 0, sceneId } = req.body;
+    if (!scriptId || !eventType) {
+      return res.status(400).json({ error: 'scriptId and eventType parameters are required.' });
+    }
+
+    const event = analyticsService.logEvent({
+      scriptId,
+      eventType,
+      watchTimeSeconds: Number(watchTimeSeconds),
+      sceneId
+    });
+
+    return res.status(201).json({ event });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getRetentionHeatmapController = async (req: Request, res: Response) => {
+  try {
+    const { scriptId } = req.params;
+    const heatmap = analyticsService.getHeatmap(scriptId);
+    return res.json({ heatmap });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const runABExperimentController = async (req: Request, res: Response) => {
+  try {
+    const { experimentId, variants = [] } = req.body;
+    if (!experimentId || !Array.isArray(variants)) {
+      return res.status(400).json({ error: 'experimentId and variants parameters are required.' });
+    }
+
+    const experiment = analyticsService.selectVariant(experimentId, variants);
+    return res.json({ experiment });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

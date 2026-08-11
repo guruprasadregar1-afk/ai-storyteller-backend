@@ -314,6 +314,21 @@ export interface CheckoutSessionItem {
   amountUsd: number;
 }
 
+export interface AnalyticsEventItem {
+  id?: string;
+  scriptId: string;
+  eventType: 'VIEW' | 'PLAY' | 'PAUSE' | 'COMPLETION' | 'DROPOFF' | 'SHARE';
+  watchTimeSeconds: number;
+  sceneId?: string;
+}
+
+export interface RetentionHeatmap {
+  scriptId: string;
+  totalViews: number;
+  completionRate: number;
+  sceneRetention: Array<{ sceneId: string; retentionPercent: number }>;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

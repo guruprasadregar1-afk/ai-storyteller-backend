@@ -411,3 +411,14 @@ model Subscription {
 
   @@map("subscriptions")
 }
+
+model AnalyticsEvent {
+  id               String   @id @default(uuid())
+  scriptId         String
+  eventType        String   // VIEW | PLAY | PAUSE | COMPLETION | DROPOFF | SHARE
+  watchTimeSeconds Float    @default(0)
+  sceneId          String?
+  timestamp        DateTime @default(now())
+
+  @@map("analytics_events")
+}
