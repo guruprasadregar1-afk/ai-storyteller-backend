@@ -67,13 +67,38 @@ export class CharacterService {
 
     if (prismaService.isAvailable) {
       try {
+        // Step 1: Ensure parent Character record exists to satisfy FK constraint character_visuals_characterId_fkey
+        await prismaService.character.upsert({
+          where: { id: characterId },
+          update: {
+            name: character.name,
+            role: character.role,
+            personality: character.personality,
+            appearance: character.appearance
+          },
+          create: {
+            id: characterId,
+            contentSourceId: characterId,
+            name: character.name,
+            role: character.role,
+            ageGroup: character.ageGroup || 'YOUNG_ADULT',
+            genderPresentation: character.genderPresentation || 'FEMALE',
+            personality: character.personality,
+            appearance: character.appearance,
+            importance: character.importance || 'HIGH',
+            confidence: character.confidence || 0.95
+          }
+        });
+
+        // Step 2: Upsert CharacterVisual
         await prismaService.characterVisual.upsert({
           where: { id: visual.id || characterId },
           update: {
             seed: visual.seed,
             avatarUrl: visual.avatarUrl,
             clothingStyle: visual.clothingStyle,
-            consistencyScore: visual.consistencyScore
+            consistencyScore: visual.consistencyScore,
+            turnaroundPrompt: visual.turnaroundPrompt
           },
           create: {
             id: visual.id || characterId,
@@ -85,7 +110,7 @@ export class CharacterService {
             consistencyScore: visual.consistencyScore
           }
         });
-      } catch {
+      } catch (err) {
         // In-memory fallback
       }
     }
@@ -136,13 +161,40 @@ export class CharacterService {
 
     if (prismaService.isAvailable) {
       try {
-        await prismaService.characterVisual.update({
+        // Ensure parent character exists
+        await prismaService.character.upsert({
+          where: { id: characterId },
+          update: {},
+          create: {
+            id: characterId,
+            contentSourceId: characterId,
+            name: 'Protagonist',
+            role: 'Lead',
+            ageGroup: 'YOUNG_ADULT',
+            genderPresentation: 'FEMALE',
+            personality: 'Brave, resilient',
+            appearance: 'Striking look',
+            importance: 'HIGH',
+            confidence: 0.95
+          }
+        });
+
+        await prismaService.characterVisual.upsert({
           where: { id: existing.id || characterId },
-          data: {
+          update: {
             seed,
             avatarUrl: updated.avatarUrl,
             clothingStyle: updated.clothingStyle,
             turnaroundPrompt: updated.turnaroundPrompt
+          },
+          create: {
+            id: existing.id || characterId,
+            characterId,
+            seed,
+            turnaroundPrompt: updated.turnaroundPrompt,
+            avatarUrl: updated.avatarUrl,
+            clothingStyle: updated.clothingStyle,
+            consistencyScore: updated.consistencyScore || 0.9
           }
         });
       } catch {

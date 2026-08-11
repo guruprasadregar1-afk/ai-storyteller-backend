@@ -10,13 +10,14 @@ export class ImageService {
     provider = 'replicate-flux',
     seed = 424242
   ): Promise<KeyframeImageItem> {
-    console.log(`[ImageService] Generating keyframe image for scene '${sceneId}' using provider '${provider}'`);
+    const validSceneId = sceneId || `scene-${Date.now()}`;
+    console.log(`[ImageService] Generating keyframe image for scene '${validSceneId}' using provider '${provider}'`);
 
     const imageId = `img-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const image: KeyframeImageItem = {
       id: imageId,
-      sceneId,
-      prompt,
+      sceneId: validSceneId,
+      prompt: prompt || 'Cinematic keyframe rendering',
       imageUrl: `https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=1024&auto=format&fit=crop&q=80`,
       provider,
       width: 1024,
@@ -30,19 +31,24 @@ export class ImageService {
     return image;
   }
 
-  async startBatchGeneration(scenePrompts: Array<{ sceneId: string; prompt: string }>): Promise<ImageGenerationJob> {
+  async startBatchGeneration(scenePrompts: Array<{ sceneId?: string; prompt?: string }>): Promise<ImageGenerationJob> {
     const jobId = `job-img-${Date.now()}`;
     console.log(`[ImageService] Queueing batch image generation job '${jobId}' for ${scenePrompts.length} scenes`);
 
     const generatedImages: KeyframeImageItem[] = [];
-    for (const item of scenePrompts) {
-      const img = await this.generateKeyframeImage(item.sceneId, item.prompt);
+    const validSceneIds: string[] = [];
+
+    for (let i = 0; i < scenePrompts.length; i++) {
+      const item = scenePrompts[i];
+      const targetSceneId = item.sceneId || `scene-batch-${i + 1}`;
+      validSceneIds.push(targetSceneId);
+      const img = await this.generateKeyframeImage(targetSceneId, item.prompt || 'Cinematic visual beat');
       generatedImages.push(img);
     }
 
     const job: ImageGenerationJob = {
       jobId,
-      sceneIds: scenePrompts.map(p => p.sceneId),
+      sceneIds: validSceneIds,
       totalImages: scenePrompts.length,
       completedImages: scenePrompts.length,
       status: 'COMPLETED',
