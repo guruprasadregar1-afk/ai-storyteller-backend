@@ -44,7 +44,10 @@ import {
   getJobStatusController,
   registerWebhookController,
   exportSocialVideoController,
-  getExportFormatsController
+  getExportFormatsController,
+  createPromptTemplateController,
+  optimizePromptController,
+  getPromptTemplatesController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -123,6 +126,11 @@ app.post('/api/webhooks/register', registerWebhookController);
 // API Routes - Sprint 13
 app.post('/api/export/social', exportSocialVideoController);
 app.get('/api/export/formats', getExportFormatsController);
+
+// API Routes - Sprint 14
+app.post('/api/prompts/templates', createPromptTemplateController);
+app.post('/api/prompts/optimize', optimizePromptController);
+app.get('/api/prompts/templates', getPromptTemplatesController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

@@ -17,6 +17,7 @@ import { SubtitleService } from '../services/SubtitleService';
 import { RenderService } from '../services/RenderService';
 import { QueueService } from '../services/QueueService';
 import { ExportService } from '../services/ExportService';
+import { PromptLabService } from '../services/PromptLabService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -36,6 +37,7 @@ const subtitleService = new SubtitleService();
 const renderService = new RenderService();
 const queueService = new QueueService();
 const exportService = new ExportService();
+const promptLabService = new PromptLabService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -703,6 +705,51 @@ export const getExportFormatsController = async (req: Request, res: Response) =>
   try {
     const formats = exportService.getAvailableFormats();
     return res.json({ formats });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 14 Controllers: Prompt Engineering Lab & Visual Bible Fine-Tuning Studio
+export const createPromptTemplateController = async (req: Request, res: Response) => {
+  try {
+    const { name, category = 'Custom', templateText, negativePrompt } = req.body;
+    if (!name || !templateText) {
+      return res.status(400).json({ error: 'name and templateText parameters are required.' });
+    }
+
+    const template = promptLabService.saveTemplate({
+      name,
+      category,
+      templateText,
+      negativePrompt,
+      tokenEstimate: 0
+    });
+
+    return res.status(201).json({ template });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const optimizePromptController = async (req: Request, res: Response) => {
+  try {
+    const { prompt, styleCategory = 'Cinematic' } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ error: 'prompt parameter is required.' });
+    }
+
+    const result = promptLabService.optimizePrompt(prompt, styleCategory);
+    return res.json({ result });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getPromptTemplatesController = async (req: Request, res: Response) => {
+  try {
+    const templates = promptLabService.getTemplates();
+    return res.json({ templates });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

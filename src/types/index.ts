@@ -235,6 +235,23 @@ export interface SocialExportItem {
   hashtags: string[];
 }
 
+export interface PromptTemplateItem {
+  id?: string;
+  name: string;
+  category: string;
+  templateText: string;
+  negativePrompt?: string;
+  tokenEstimate: number;
+}
+
+export interface PromptOptimizationResult {
+  originalPrompt: string;
+  optimizedPrompt: string;
+  negativePrompt: string;
+  estimatedTokens: number;
+  variations: string[];
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

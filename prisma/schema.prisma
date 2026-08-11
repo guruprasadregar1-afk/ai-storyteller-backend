@@ -351,3 +351,15 @@ model SocialExport {
 
   @@map("social_exports")
 }
+
+model PromptTemplate {
+  id               String   @id @default(uuid())
+  name             String   @unique
+  category         String   @default("Character Visual")
+  templateText     String   @db.Text
+  negativePrompt   String?  @db.Text
+  tokenEstimate    Int      @default(50)
+  createdAt        DateTime @default(now())
+
+  @@map("prompt_templates")
+}
