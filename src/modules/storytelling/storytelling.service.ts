@@ -1,0 +1,41 @@
+import { ScriptService } from '../../services/ScriptService';
+import { CharacterService } from '../../services/CharacterService';
+import { NarratorService } from '../../services/NarratorService';
+import { SceneService } from '../../services/SceneService';
+import { StyleService } from '../../services/StyleService';
+import { ImageService } from '../../services/ImageService';
+import { VoiceService } from '../../services/VoiceService';
+import { AudioService } from '../../services/AudioService';
+import { VideoService } from '../../services/VideoService';
+import { TimelineService } from '../../services/TimelineService';
+import { SubtitleService } from '../../services/SubtitleService';
+import { RenderService } from '../../services/RenderService';
+import { QueueService } from '../../services/QueueService';
+import { ExportService } from '../../services/ExportService';
+import { PromptLabService } from '../../services/PromptLabService';
+import { CollaborationService } from '../../services/CollaborationService';
+import { BranchingService } from '../../services/BranchingService';
+import { AnalyticsService } from '../../services/AnalyticsService';
+import { MasterOrchestratorService } from '../../services/MasterOrchestratorService';
+
+export class StorytellingService {
+  public scriptService = new ScriptService();
+  public characterService = new CharacterService();
+  public narratorService = new NarratorService();
+  public sceneService = new SceneService();
+  public styleService = new StyleService();
+  public imageService = new ImageService();
+  public voiceService = new VoiceService();
+  public audioService = new AudioService();
+  public videoService = new VideoService();
+  public timelineService = new TimelineService();
+  public subtitleService = new SubtitleService();
+  public renderService = new RenderService();
+  public queueService = new QueueService();
+  public exportService = new ExportService();
+  public promptLabService = new PromptLabService();
+  public collaborationService = new CollaborationService();
+  public branchingService = new BranchingService();
+  public analyticsService = new AnalyticsService();
+  public masterOrchestratorService = new MasterOrchestratorService();
+}
