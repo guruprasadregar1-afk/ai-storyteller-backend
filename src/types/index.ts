@@ -100,6 +100,28 @@ export interface ImageGenerationJob {
   images: KeyframeImageItem[];
 }
 
+export interface VoiceSynthesisItem {
+  id?: string;
+  text: string;
+  voiceId: string;
+  provider: string;
+  audioUrl: string;
+  durationSeconds: number;
+  emotion: string;
+  speed: number;
+  pitch: number;
+}
+
+export interface VoiceCatalogItem {
+  voiceId: string;
+  name: string;
+  gender: 'FEMALE' | 'MALE' | 'NEUTRAL';
+  ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
+  language: string;
+  accent: string;
+  sampleUrl: string;
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';

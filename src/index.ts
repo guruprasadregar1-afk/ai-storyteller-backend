@@ -21,7 +21,10 @@ import {
   generateEnvironmentRefController,
   generateSceneImageController,
   batchGenerateImagesController,
-  getImageJobStatusController
+  getImageJobStatusController,
+  synthesizeNarratorController,
+  synthesizeDialogueController,
+  getVoiceCatalogController
 } from './controllers/contentController';
 
 dotenv.config();
@@ -61,6 +64,11 @@ app.post('/api/environments/generate', generateEnvironmentRefController);
 app.post('/api/scenes/:id/generate-image', generateSceneImageController);
 app.post('/api/scenes/batch-generate', batchGenerateImagesController);
 app.get('/api/jobs/images/:jobId', getImageJobStatusController);
+
+// API Routes - Sprint 6
+app.post('/api/narrator/synthesize', synthesizeNarratorController);
+app.post('/api/dialogue/synthesize', synthesizeDialogueController);
+app.get('/api/voices/catalog', getVoiceCatalogController);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

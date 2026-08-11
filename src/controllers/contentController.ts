@@ -9,6 +9,7 @@ import { NarratorService } from '../services/NarratorService';
 import { SceneService } from '../services/SceneService';
 import { StyleService } from '../services/StyleService';
 import { ImageService } from '../services/ImageService';
+import { VoiceService } from '../services/VoiceService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -20,6 +21,7 @@ const narratorService = new NarratorService(aiManager);
 const sceneService = new SceneService(aiManager);
 const styleService = new StyleService();
 const imageService = new ImageService();
+const voiceService = new VoiceService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -347,6 +349,44 @@ export const getImageJobStatusController = async (req: Request, res: Response) =
     }
 
     return res.json({ job });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 6 Controllers: Voice Synthesis & Multi-Voice Narration Engine
+export const synthesizeNarratorController = async (req: Request, res: Response) => {
+  try {
+    const { text, voiceId = 'eleven-rachel', provider = 'elevenlabs', emotion = 'Neutral', speed = 1.0, pitch = 1.0 } = req.body;
+    if (!text) {
+      return res.status(400).json({ error: 'text parameter is required for voice synthesis.' });
+    }
+
+    const audio = await voiceService.synthesizeSpeech(text, voiceId, provider, emotion, Number(speed), Number(pitch));
+    return res.json({ audio });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const synthesizeDialogueController = async (req: Request, res: Response) => {
+  try {
+    const { lines } = req.body;
+    if (!lines || !Array.isArray(lines) || lines.length === 0) {
+      return res.status(400).json({ error: 'lines array containing speaker and text objects is required.' });
+    }
+
+    const dialogueResult = await voiceService.synthesizeMultiSpeakerDialogue(lines);
+    return res.json(dialogueResult);
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getVoiceCatalogController = async (req: Request, res: Response) => {
+  try {
+    const voices = voiceService.getVoiceCatalog();
+    return res.json({ voices });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

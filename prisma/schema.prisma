@@ -242,3 +242,18 @@ model KeyframeImage {
 
   @@map("keyframe_images")
 }
+
+model VoiceSynthesis {
+  id               String   @id @default(uuid())
+  text             String   @db.Text
+  voiceId          String
+  provider         String   @default("elevenlabs")
+  audioUrl         String
+  durationSeconds  Float    @default(5.0)
+  emotion          String   @default("Neutral")
+  speed            Float    @default(1.0)
+  pitch            Float    @default(1.0)
+  createdAt        DateTime @default(now())
+
+  @@map("voice_syntheses")
+}
