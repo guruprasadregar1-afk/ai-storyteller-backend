@@ -1,5 +1,6 @@
 import { ContentType, RightsStatus, VerificationStatus } from '../types';
 import { prismaService } from '../database/prisma/prisma.service';
+import { normalizeContentType } from '../common/utils/content-type.util';
 
 export interface ContentSourceRecord {
   id: string;
@@ -155,11 +156,12 @@ export class ContentService {
     const normalizedTitle = this.normalizeTitle(record.title);
     const existing = this.inMemoryDb.get(normalizedTitle);
 
+    const normalizedContentType = normalizeContentType(record.contentType);
     const newRecord: ContentSourceRecord = {
       id: existing?.id || `content-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
       title: record.title,
       normalizedTitle,
-      contentType: record.contentType,
+      contentType: normalizedContentType,
       description: record.description || `Canonical record for ${record.title}`,
       rightsStatus: record.rightsStatus || 'PUBLIC_DOMAIN',
       verificationStatus: 'VERIFIED',

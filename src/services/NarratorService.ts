@@ -1,6 +1,7 @@
 import { AIProviderManager } from '../ai/AIProviderManager';
 import { CharacterItem, VoiceProfileResult } from '../types';
 import { prismaService } from '../database/prisma/prisma.service';
+import { normalizeContentType } from '../common/utils/content-type.util';
 
 export class NarratorService {
   constructor(private aiManager: AIProviderManager) {}
@@ -22,7 +23,7 @@ export class NarratorService {
             id: contentId,
             title: contentInfo.title,
             normalizedTitle: contentInfo.title.toLowerCase().trim(),
-            contentType: (contentInfo.contentType as any) || 'MOVIE',
+            contentType: normalizeContentType(contentInfo.contentType),
             rightsStatus: 'PUBLIC_DOMAIN'
           }
         });

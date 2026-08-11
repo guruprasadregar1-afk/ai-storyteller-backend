@@ -1,5 +1,6 @@
 import { AIProviderManager } from '../ai/AIProviderManager';
 import { RightsService } from './RightsService';
+import { normalizeContentType } from '../common/utils/content-type.util';
 import { ScriptGenerationParams, ScriptResult, ContentType } from '../types';
 import { prismaService } from '../database/prisma/prisma.service';
 
@@ -36,7 +37,7 @@ export class ScriptService {
             id: contentId,
             title: title,
             normalizedTitle: title.toLowerCase().trim(),
-            contentType: contentType || 'MOVIE',
+            contentType: normalizeContentType(contentType),
             rightsStatus: 'PUBLIC_DOMAIN'
           }
         });
