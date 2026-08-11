@@ -8,6 +8,7 @@ import { CharacterService } from '../services/CharacterService';
 import { NarratorService } from '../services/NarratorService';
 import { SceneService } from '../services/SceneService';
 import { StyleService } from '../services/StyleService';
+import { ImageService } from '../services/ImageService';
 
 const aiManager = new AIProviderManager();
 const contentService = new ContentService();
@@ -18,6 +19,7 @@ const characterService = new CharacterService(aiManager);
 const narratorService = new NarratorService(aiManager);
 const sceneService = new SceneService(aiManager);
 const styleService = new StyleService();
+const imageService = new ImageService();
 
 export const analyzeContent = async (req: Request, res: Response) => {
   try {
@@ -301,6 +303,50 @@ export const generateEnvironmentRefController = async (req: Request, res: Respon
 
     const envRef = styleService.generateEnvironmentRef(locationName, stylePresetName);
     return res.json({ environment: envRef });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Sprint 5 Controllers: Keyframe Image Generation Pipeline
+export const generateSceneImageController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { prompt, provider = 'replicate-flux', seed = 424242 } = req.body;
+
+    const imagePrompt = prompt || `Cinematic image render for scene beat ${id}`;
+    const image = await imageService.generateKeyframeImage(id, imagePrompt, provider, Number(seed));
+
+    return res.json({ sceneId: id, image });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const batchGenerateImagesController = async (req: Request, res: Response) => {
+  try {
+    const { scenes } = req.body;
+    if (!scenes || !Array.isArray(scenes) || scenes.length === 0) {
+      return res.status(400).json({ error: 'scenes array containing sceneId and prompt objects is required.' });
+    }
+
+    const job = await imageService.startBatchGeneration(scenes);
+    return res.status(202).json({ job });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getImageJobStatusController = async (req: Request, res: Response) => {
+  try {
+    const { jobId } = req.params;
+    const job = await imageService.getJobStatus(jobId);
+
+    if (!job) {
+      return res.status(404).json({ error: 'Image generation job not found.' });
+    }
+
+    return res.json({ job });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

@@ -226,3 +226,19 @@ model EnvironmentRef {
 
   @@map("environment_refs")
 }
+
+model KeyframeImage {
+  id               String   @id @default(uuid())
+  sceneId          String
+  prompt           String   @db.Text
+  imageUrl         String
+  provider         String   @default("replicate-sdxl")
+  width            Int      @default(1024)
+  height           Int      @default(1024)
+  seed             Int      @default(424242)
+  isUpscaled       Boolean  @default(false)
+  status           String   @default("COMPLETED")
+  createdAt        DateTime @default(now())
+
+  @@map("keyframe_images")
+}

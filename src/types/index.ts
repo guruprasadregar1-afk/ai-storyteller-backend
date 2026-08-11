@@ -78,6 +78,28 @@ export interface EnvironmentRefItem {
   coherenceScore: number;
 }
 
+export interface KeyframeImageItem {
+  id?: string;
+  sceneId: string;
+  prompt: string;
+  imageUrl: string;
+  provider: string;
+  width: number;
+  height: number;
+  seed: number;
+  isUpscaled: boolean;
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+}
+
+export interface ImageGenerationJob {
+  jobId: string;
+  sceneIds: string[];
+  totalImages: number;
+  completedImages: number;
+  status: 'QUEUED' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+  images: KeyframeImageItem[];
+}
+
 export interface VoiceProfileResult {
   ageGroup: 'CHILD' | 'YOUNG_ADULT' | 'ADULT' | 'ELDERLY';
   genderPresentation: 'FEMALE' | 'MALE' | 'NEUTRAL';
