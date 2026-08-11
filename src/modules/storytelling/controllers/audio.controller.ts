@@ -10,14 +10,13 @@ export async function recommendMusicController(req: Request, res: Response) {
 }
 
 export async function mixAudioController(req: Request, res: Response) {
-  const { narrationTrackUrl, musicTrackUrl, duckingLevelDb } = req.body;
-  const mix = audioService.mixAudioTracks({
-    narrationTrackUrl,
-    musicTrackUrl,
-    duckingLevelDb: duckingLevelDb || -14,
-    outputMixedUrl: `https://cdn.ai-storyteller.internal/audio/mixed-${Date.now()}.mp3`,
-    totalDurationSeconds: 60
-  });
+  const { narrationTrackUrl, musicTrackUrl, sfxTrackUrls, duckingLevelDb } = req.body;
+  const mix = audioService.mixAudioTracks(
+    narrationTrackUrl || 'https://actions.google.com/sounds/v1/ambiences/outdoor_ambience.ogg',
+    musicTrackUrl || 'https://actions.google.com/sounds/v1/ambiences/outdoor_ambience.ogg',
+    sfxTrackUrls || [],
+    duckingLevelDb || -14
+  );
   res.json({ success: true, mix });
 }
 

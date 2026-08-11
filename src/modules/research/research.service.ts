@@ -6,10 +6,10 @@ export class ResearchService {
   private rightsService = new RightsService();
 
   async researchTopic(contentId: string, topic: string) {
-    return await this.coreResearch.performResearch(contentId, topic);
+    return await this.coreResearch.performResearch(contentId, topic as any);
   }
 
-  async checkRights(title: string, author?: string) {
-    return this.rightsService.evaluateRights(title, author);
+  async checkRights(contentType: string, title: string) {
+    return this.rightsService.evaluateRights(contentType as any, title);
   }
 }

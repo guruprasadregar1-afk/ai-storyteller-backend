@@ -18,17 +18,19 @@ export class PrismaService extends PrismaClient {
   }
 
   async connectDatabase(): Promise<void> {
+    if (!process.env.DATABASE_URL || process.env.DATABASE_URL.trim() === '') {
+      this.isAvailable = false;
+      console.log('[PrismaService] Development fallback mode active (In-Memory persistence).');
+      return;
+    }
+
     try {
-      // 1-second connect timeout check
-      const connectPromise = this.$connect();
-      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('DB_TIMEOUT')), 1000));
-      
-      await Promise.race([connectPromise, timeoutPromise]);
+      await this.$connect();
       this.isAvailable = true;
-      console.log('[PrismaService] Database connected successfully.');
+      console.log('[PrismaService] Connected to Supabase PostgreSQL Database successfully.');
     } catch (error) {
       this.isAvailable = false;
-      console.warn('[PrismaService] Database connection deferred/development mode fallback active.');
+      console.warn('[PrismaService] Could not reach remote DB, activating development mode fallback.');
     }
   }
 

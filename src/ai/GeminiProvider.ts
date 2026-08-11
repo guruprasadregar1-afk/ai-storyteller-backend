@@ -70,7 +70,7 @@ export class GeminiProvider implements AIProvider {
     return sentences.map((sentence, index) => ({
       beatIndex: index + 1,
       narrationText: sentence.trim(),
-      visualPrompt: `Cinematic visualization: ${sentence.trim()}`,
+      visualPrompt: `cinematic 8k render, Cinematic visualization: ${sentence.trim()}`,
       cameraDirective: 'MEDIUM_SHOT',
       lightingMood: 'DRAMATIC_NATURAL',
       estimatedSeconds: 5.0
@@ -98,7 +98,7 @@ export class GeminiProvider implements AIProvider {
       characterId: character.id || 'char-201',
       seed: 88888,
       faceEmbedding: JSON.stringify([0.05, 0.22, -0.11]),
-      turnaroundPrompt: `Gemini visual sheet for ${character.name}`,
+      turnaroundPrompt: `Character turnaround sheet visual sheet for ${character.name}`,
       avatarUrl: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500`,
       clothingStyle: 'Modern Classic',
       consistencyScore: 0.92

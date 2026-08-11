@@ -5,13 +5,13 @@ const queueService = new QueueService();
 
 export async function enqueueJobController(req: Request, res: Response) {
   const { taskName, payload, webhookUrl } = req.body;
-  const job = queueService.enqueueJob(taskName, payload, webhookUrl);
+  const job = await queueService.enqueueJob(taskName, payload, webhookUrl);
   res.json({ success: true, job });
 }
 
 export async function getJobStatusController(req: Request, res: Response) {
   const { id } = req.params;
-  const job = queueService.getJobStatus(id);
+  const job = await queueService.getJob(id);
   res.json({ success: true, job });
 }
 
