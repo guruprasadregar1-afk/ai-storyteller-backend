@@ -1,5 +1,5 @@
 import { AIProvider } from './AIProvider';
-import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult } from '../types';
+import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem } from '../types';
 
 export class GeminiProvider implements AIProvider {
   name = 'gemini';
@@ -63,6 +63,18 @@ export class GeminiProvider implements AIProvider {
       provider: this.name,
       model: this.model
     };
+  }
+
+  async segmentScript(scriptText: string): Promise<SceneBeatItem[]> {
+    const sentences = scriptText.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+    return sentences.map((sentence, index) => ({
+      beatIndex: index + 1,
+      narrationText: sentence.trim(),
+      visualPrompt: `Cinematic visualization: ${sentence.trim()}`,
+      cameraDirective: 'MEDIUM_SHOT',
+      lightingMood: 'DRAMATIC_NATURAL',
+      estimatedSeconds: 5.0
+    }));
   }
 
   async extractCharacters(scriptOrFacts: string): Promise<CharacterItem[]> {

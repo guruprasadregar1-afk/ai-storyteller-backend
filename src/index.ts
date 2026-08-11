@@ -9,7 +9,10 @@ import {
   generateScript,
   getCharacters,
   getNarrator,
-  getAIHealth
+  getAIHealth,
+  segmentScriptBeats,
+  getScriptScenes,
+  updateScriptSceneBeat
 } from './controllers/contentController';
 
 dotenv.config();
@@ -20,7 +23,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// API Routes
+// API Routes - Sprint 1
 app.post('/api/content/analyze', analyzeContent);
 app.get('/api/content/search', searchContent);
 app.get('/api/content/:id', getContentById);
@@ -29,6 +32,11 @@ app.post('/api/content/:id/script', generateScript);
 app.get('/api/content/:id/characters', getCharacters);
 app.get('/api/content/:id/narrator', getNarrator);
 app.get('/api/ai/providers/health', getAIHealth);
+
+// API Routes - Sprint 2
+app.post('/api/scripts/:id/segment', segmentScriptBeats);
+app.get('/api/scripts/:id/scenes', getScriptScenes);
+app.put('/api/scripts/:id/scenes/:sceneId', updateScriptSceneBeat);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'AI Storyteller Backend', version: '1.0.0' });

@@ -26,6 +26,17 @@ export interface ScriptResult {
   model: string;
 }
 
+export interface SceneBeatItem {
+  id?: string;
+  scriptId?: string;
+  beatIndex: number;
+  narrationText: string;
+  visualPrompt: string;
+  cameraDirective: 'WIDE_SHOT' | 'MEDIUM_SHOT' | 'CLOSE_UP' | 'DRONE_PAN' | 'MACRO_ZOOM' | 'OVER_SHOULDER';
+  lightingMood: 'DRAMATIC_NATURAL' | 'NEON_CYBERPUNK' | 'CINEMATIC_GOLDEN_HOUR' | 'VINTAGE_NOIR' | 'WARM_PASTEL';
+  estimatedSeconds: number;
+}
+
 export interface CharacterItem {
   name: string;
   role: string;

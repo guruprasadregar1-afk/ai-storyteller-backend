@@ -109,7 +109,26 @@ model StorytellingScript {
   createdAt       DateTime      @default(now())
   contentSource   ContentSource @relation(fields: [contentSourceId], references: [id], onDelete: Cascade)
 
+  scenes          SceneBeat[]
+
   @@map("storytelling_scripts")
+}
+
+model SceneBeat {
+  id               String             @id @default(uuid())
+  scriptId         String
+  beatIndex        Int
+  narrationText    String             @db.Text
+  visualPrompt     String             @db.Text
+  cameraDirective  String             @default("MEDIUM_SHOT")
+  lightingMood     String             @default("DRAMATIC_NATURAL")
+  estimatedSeconds Float              @default(5.0)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  script           StorytellingScript @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+
+  @@map("scene_beats")
 }
 
 model Character {

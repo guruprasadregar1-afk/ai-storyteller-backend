@@ -1,4 +1,4 @@
-import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult } from '../types';
+import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem } from '../types';
 
 export interface AIProvider {
   name: string;
@@ -7,6 +7,7 @@ export interface AIProvider {
   classifyContent(input: string): Promise<ClassifyResult>;
   resolveContent(input: string, candidates: string[]): Promise<{ canonicalTitle: string; confidence: number; contentType: ContentType }>;
   generateStoryScript(title: string, facts: string[], params: ScriptGenerationParams): Promise<ScriptResult>;
+  segmentScript(scriptText: string): Promise<SceneBeatItem[]>;
   extractCharacters(scriptOrFacts: string): Promise<CharacterItem[]>;
   selectNarrator(contentInfo: { title: string; contentType: string; genre?: string }, script: string, characters: CharacterItem[]): Promise<VoiceProfileResult>;
 }

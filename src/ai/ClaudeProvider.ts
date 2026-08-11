@@ -1,5 +1,5 @@
 import { AIProvider } from './AIProvider';
-import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult } from '../types';
+import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem } from '../types';
 
 export class ClaudeProvider implements AIProvider {
   name = 'claude';
@@ -69,6 +69,32 @@ export class ClaudeProvider implements AIProvider {
       provider: this.name,
       model: this.model
     };
+  }
+
+  async segmentScript(scriptText: string): Promise<SceneBeatItem[]> {
+    const sentences = scriptText.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+    const cameraDirectives: Array<'WIDE_SHOT' | 'MEDIUM_SHOT' | 'CLOSE_UP' | 'DRONE_PAN' | 'MACRO_ZOOM' | 'OVER_SHOULDER'> = [
+      'WIDE_SHOT', 'MEDIUM_SHOT', 'CLOSE_UP', 'DRONE_PAN', 'OVER_SHOULDER'
+    ];
+    const lightingMoods: Array<'DRAMATIC_NATURAL' | 'NEON_CYBERPUNK' | 'CINEMATIC_GOLDEN_HOUR' | 'VINTAGE_NOIR' | 'WARM_PASTEL'> = [
+      'CINEMATIC_GOLDEN_HOUR', 'DRAMATIC_NATURAL', 'VINTAGE_NOIR'
+    ];
+
+    return sentences.map((sentence, index) => {
+      const camera = cameraDirectives[index % cameraDirectives.length];
+      const lighting = lightingMoods[index % lightingMoods.length];
+      const words = sentence.split(/\s+/).length;
+      const estimatedSeconds = Math.max(3, Math.round((words / 2.5) * 10) / 10);
+
+      return {
+        beatIndex: index + 1,
+        narrationText: sentence.trim(),
+        visualPrompt: `High quality cinematic 8k render, ${camera.toLowerCase().replace('_', ' ')}: ${sentence.trim()}. ${lighting.toLowerCase().replace('_', ' ')} lighting, highly detailed masterpiece.`,
+        cameraDirective: camera,
+        lightingMood: lighting,
+        estimatedSeconds
+      };
+    });
   }
 
   async extractCharacters(scriptOrFacts: string): Promise<CharacterItem[]> {

@@ -1,5 +1,5 @@
 import { AIProvider } from './AIProvider';
-import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult } from '../types';
+import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem } from '../types';
 
 export class GroqProvider implements AIProvider {
   name = 'groq';
@@ -62,6 +62,18 @@ export class GroqProvider implements AIProvider {
       provider: this.name,
       model: this.model
     };
+  }
+
+  async segmentScript(scriptText: string): Promise<SceneBeatItem[]> {
+    const sentences = scriptText.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+    return sentences.map((sentence, index) => ({
+      beatIndex: index + 1,
+      narrationText: sentence.trim(),
+      visualPrompt: `Groq visual render: ${sentence.trim()}`,
+      cameraDirective: 'WIDE_SHOT',
+      lightingMood: 'CINEMATIC_GOLDEN_HOUR',
+      estimatedSeconds: 4.5
+    }));
   }
 
   async extractCharacters(scriptOrFacts: string): Promise<CharacterItem[]> {

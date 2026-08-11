@@ -2,7 +2,7 @@ import { AIProvider } from './AIProvider';
 import { ClaudeProvider } from './ClaudeProvider';
 import { GeminiProvider } from './GeminiProvider';
 import { GroqProvider } from './GroqProvider';
-import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult } from '../types';
+import { ClassifyResult, ScriptGenerationParams, ScriptResult, CharacterItem, VoiceProfileResult, SceneBeatItem } from '../types';
 
 export class AIProviderManager {
   private providers: Map<string, AIProvider> = new Map();
@@ -58,6 +58,11 @@ export class AIProviderManager {
   async generateStoryScript(title: string, facts: string[], params: ScriptGenerationParams): Promise<ScriptResult> {
     const provider = await this.getHealthyProvider();
     return provider.generateStoryScript(title, facts, params);
+  }
+
+  async segmentScript(scriptText: string): Promise<SceneBeatItem[]> {
+    const provider = await this.getHealthyProvider();
+    return provider.segmentScript(scriptText);
   }
 
   async extractCharacters(scriptOrFacts: string): Promise<CharacterItem[]> {
