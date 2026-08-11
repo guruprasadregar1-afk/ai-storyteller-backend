@@ -28,11 +28,24 @@ export class ScriptService {
     // Persist script to Prisma DB
     if (prismaService.isAvailable) {
       try {
+        const contentId = title;
+        await prismaService.contentSource.upsert({
+          where: { id: contentId },
+          update: {},
+          create: {
+            id: contentId,
+            title: title,
+            normalizedTitle: title.toLowerCase().trim(),
+            contentType: contentType || 'MOVIE',
+            rightsStatus: 'PUBLIC_DOMAIN'
+          }
+        });
+
         const scriptId = `script-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`;
         await prismaService.storytellingScript.create({
           data: {
             id: scriptId,
-            contentSourceId: title,
+            contentSourceId: contentId,
             mode: params.mode || 'FULL_STORY',
             language: 'English',
             script: scriptResult.script,
@@ -43,8 +56,8 @@ export class ScriptService {
           }
         });
         console.log(`[ScriptService] Persisted generated script '${scriptId}' to Prisma Database.`);
-      } catch {
-        // In-memory fallback
+      } catch (err) {
+        console.warn(`[ScriptService] Database persist warning:`, err);
       }
     }
 

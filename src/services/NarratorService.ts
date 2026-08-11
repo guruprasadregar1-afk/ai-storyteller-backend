@@ -12,27 +12,42 @@ export class NarratorService {
   ): Promise<VoiceProfileResult> {
     const narrator = await this.aiManager.selectNarrator(contentInfo, script, characters);
 
-    try {
-      await prismaService.narratorProfile.create({
-        data: {
-          contentSourceId: contentInfo.title,
-          ageGroup: narrator.ageGroup,
-          genderPresentation: narrator.genderPresentation,
-          tone: narrator.tone,
-          emotion: narrator.emotion,
-          pace: narrator.pace,
-          language: narrator.language || 'English',
-          accent: narrator.accent || 'Neutral',
-          style: narrator.style,
-          audience: narrator.audience,
-          reasoning: narrator.reasoning,
-          confidence: narrator.confidence || 1.0,
-          selectedProvider: narrator.selectedProvider,
-          selectedModel: narrator.selectedModel
-        }
-      });
-    } catch {
-      // In-memory fallback
+    if (prismaService.isAvailable) {
+      try {
+        const contentId = contentInfo.title;
+        await prismaService.contentSource.upsert({
+          where: { id: contentId },
+          update: {},
+          create: {
+            id: contentId,
+            title: contentInfo.title,
+            normalizedTitle: contentInfo.title.toLowerCase().trim(),
+            contentType: (contentInfo.contentType as any) || 'MOVIE',
+            rightsStatus: 'PUBLIC_DOMAIN'
+          }
+        });
+
+        await prismaService.narratorProfile.create({
+          data: {
+            contentSourceId: contentId,
+            ageGroup: narrator.ageGroup,
+            genderPresentation: narrator.genderPresentation,
+            tone: narrator.tone,
+            emotion: narrator.emotion,
+            pace: narrator.pace,
+            language: narrator.language || 'English',
+            accent: narrator.accent || 'Neutral',
+            style: narrator.style,
+            audience: narrator.audience,
+            reasoning: narrator.reasoning,
+            confidence: narrator.confidence || 1.0,
+            selectedProvider: narrator.selectedProvider,
+            selectedModel: narrator.selectedModel
+          }
+        });
+      } catch (err) {
+        console.warn(`[NarratorService] Database persist warning:`, err);
+      }
     }
 
     return narrator;

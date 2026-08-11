@@ -15,6 +15,18 @@ export class CharacterService {
         this.characterStore.set(char.id, char);
         if (prismaService.isAvailable) {
           try {
+            await prismaService.contentSource.upsert({
+              where: { id: char.id },
+              update: {},
+              create: {
+                id: char.id,
+                title: char.name,
+                normalizedTitle: char.name.toLowerCase().trim(),
+                contentType: 'STORY',
+                rightsStatus: 'PUBLIC_DOMAIN'
+              }
+            });
+
             await prismaService.character.upsert({
               where: { id: char.id },
               update: {
@@ -36,8 +48,8 @@ export class CharacterService {
                 confidence: char.confidence || 0.95
               }
             });
-          } catch {
-            // In-memory fallback
+          } catch (err) {
+            console.warn(`[CharacterService] Character upsert warning:`, err);
           }
         }
       }

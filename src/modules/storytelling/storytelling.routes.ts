@@ -98,6 +98,7 @@ storytellingRouter.put('/characters/:id/avatar', updateCharacterAvatarController
 
 // Scene Beats
 storytellingRouter.post('/scripts/:id/segment', segmentScriptController);
+storytellingRouter.post('/scripts/:id/scenes', segmentScriptController);
 storytellingRouter.get('/scripts/:id/scenes', getScenesController);
 storytellingRouter.put('/scripts/:id/scenes/:sceneId', updateSceneBeatController);
 
