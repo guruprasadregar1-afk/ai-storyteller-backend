@@ -1,2 +1,2 @@
-import { ClaudeProvider } from '../../../../src/ai/ClaudeProvider';
+import { ClaudeProvider } from '../../../../ai/ClaudeProvider';
 export class ClaudeAIProvider extends ClaudeProvider {}

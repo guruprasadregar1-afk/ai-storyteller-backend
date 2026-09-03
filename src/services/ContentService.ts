@@ -185,6 +185,8 @@ export class ContentService {
         await prismaService.contentSource.upsert({
           where: { normalizedTitle },
           update: {
+            title: newRecord.title,
+            contentType: newRecord.contentType as any,
             description: newRecord.description,
             rightsStatus: newRecord.rightsStatus as any,
             verificationStatus: 'VERIFIED'

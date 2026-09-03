@@ -16,16 +16,20 @@ export class CharacterService {
         if (prismaService.isAvailable) {
           try {
             await prismaService.contentSource.upsert({
-              where: { id: char.id },
-              update: {},
+              where: { normalizedTitle: char.name.toLowerCase().trim() },
+              update: { title: char.name },
               create: {
-                id: char.id,
+                id: `cs-char-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
                 title: char.name,
                 normalizedTitle: char.name.toLowerCase().trim(),
                 contentType: 'STORY',
                 rightsStatus: 'PUBLIC_DOMAIN'
               }
             });
+            const resolvedSource = await prismaService.contentSource.findUnique({
+              where: { normalizedTitle: char.name.toLowerCase().trim() }
+            });
+            const resolvedCsId = resolvedSource?.id || char.id;
 
             await prismaService.character.upsert({
               where: { id: char.id },
@@ -37,7 +41,7 @@ export class CharacterService {
               },
               create: {
                 id: char.id,
-                contentSourceId: char.id,
+                contentSourceId: resolvedCsId,
                 name: char.name,
                 role: char.role,
                 ageGroup: char.ageGroup || 'YOUNG_ADULT',

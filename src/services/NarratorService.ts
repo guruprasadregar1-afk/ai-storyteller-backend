@@ -15,22 +15,25 @@ export class NarratorService {
 
     if (prismaService.isAvailable) {
       try {
+        const normalizedTitle = contentInfo.title.toLowerCase().trim();
         const contentId = contentInfo.title;
         await prismaService.contentSource.upsert({
-          where: { id: contentId },
-          update: {},
+          where: { normalizedTitle },
+          update: { title: contentId },
           create: {
-            id: contentId,
-            title: contentInfo.title,
-            normalizedTitle: contentInfo.title.toLowerCase().trim(),
+            id: `cs-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+            title: contentId,
+            normalizedTitle,
             contentType: normalizeContentType(contentInfo.contentType),
             rightsStatus: 'PUBLIC_DOMAIN'
           }
         });
+        const persistedSource = await prismaService.contentSource.findUnique({ where: { normalizedTitle } });
+        const resolvedContentId = persistedSource?.id || contentId;
 
         await prismaService.narratorProfile.create({
           data: {
-            contentSourceId: contentId,
+            contentSourceId: resolvedContentId,
             ageGroup: narrator.ageGroup,
             genderPresentation: narrator.genderPresentation,
             tone: narrator.tone,

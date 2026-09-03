@@ -1,6 +1,7 @@
 export type ContentType = 'MOVIE' | 'BOOK' | 'STORY' | 'HISTORY' | 'FOLKLORE' | 'USER_CONTEXT';
 export type RightsStatus = 'PUBLIC_DOMAIN' | 'LICENSED' | 'USER_PROVIDED' | 'UNKNOWN' | 'RESTRICTED';
 export type VerificationStatus = 'UNVERIFIED' | 'VERIFIED' | 'STALE';
+export type AdaptationVersion = 'TRADITIONAL' | 'PERRAULT' | 'GRIMM' | 'MOVIE_ADAPTATION' | 'UNKNOWN';
 
 export interface ClassifyResult {
   contentType: ContentType;
@@ -8,13 +9,19 @@ export interface ClassifyResult {
   canonicalTitle: string;
   reason: string;
   candidateTitles?: string[];
+  suggestedAdaptation?: AdaptationVersion;
 }
 
 export interface ScriptGenerationParams {
-  mode: 'SHORT_SUMMARY' | 'DETAILED_STORY' | 'ENDING_EXPLAINED' | 'CHARACTER_FOCUS' | 'CHILDREN_SIMPLIFIED' | 'HISTORICAL_EXPLANATION' | 'GENRE_STYLE';
+  mode: 'SHORT' | 'STANDARD' | 'DETAILED' | 'FULL_STORY' | 'SHORT_SUMMARY' | 'DETAILED_STORY' | 'ENDING_EXPLAINED' | 'CHARACTER_FOCUS' | 'CHILDREN_SIMPLIFIED' | 'HISTORICAL_EXPLANATION' | 'GENRE_STYLE';
   language?: string;
+  adaptationVersion?: AdaptationVersion;
   constraints?: string[];
+  /** When false, prompts omit multi-voice dialogue requirements (narrator-only). */
+  requireMultiVoiceDialogue?: boolean;
 }
+
+export type NarrationPath = 'multi-voice' | 'narrator-only';
 
 export interface ScriptResult {
   script: string;
@@ -24,6 +31,8 @@ export interface ScriptResult {
   qualityScore: number;
   provider: string;
   model: string;
+  /** Which narration pipeline path was used after generation. */
+  narrationPath?: NarrationPath;
 }
 
 export interface SceneBeatItem {
@@ -381,3 +390,85 @@ export interface AIProviderResponse<T> {
   latencyMs: number;
   error?: string;
 }
+
+export type StoryEmotion =
+  | 'NEUTRAL'
+  | 'CALM'
+  | 'JOYFUL'
+  | 'EXCITED'
+  | 'CURIOUS'
+  | 'PLAYFUL'
+  | 'ROMANTIC'
+  | 'HOPEFUL'
+  | 'SAD'
+  | 'MELANCHOLIC'
+  | 'FEARFUL'
+  | 'ANXIOUS'
+  | 'SUSPENSEFUL'
+  | 'ANGRY'
+  | 'URGENT'
+  | 'SURPRISED'
+  | 'AWE'
+  | 'TRIUMPHANT'
+  | 'REFLECTIVE'
+  | 'SERIOUS';
+
+export type PauseStyle = 'SHORT' | 'NORMAL' | 'LONG' | 'DRAMATIC';
+
+export interface StoryEmotionSegment {
+  segmentIndex: number;
+  /** Stable paragraph index — 1:1 with TranslationService paragraph boundaries. */
+  paragraphIndex?: number;
+  text: string;
+  emotion: StoryEmotion;
+  intensity: number; // 0.0 to 1.0
+  pace: number; // e.g. 0.75 to 1.25
+  pitch: number; // e.g. -2 to +2
+  volume: number; // e.g. -2 to +2
+  pauseStyle: PauseStyle;
+  /** Speaker from Emotion Engine /tag (e.g. Rancho, Pia, narrator). */
+  speaker?: string;
+  /** Piper voice role from /tag (e.g. adult_male, adult_female). */
+  role?: string;
+}
+
+export interface EmotionMapResult {
+  language: string;
+  segments: StoryEmotionSegment[];
+  overallMood: string;
+  /** emotion-engine tagger mode (ml/rule) or keyword-fallback */
+  taggerMode?: string;
+  /** Where the emotion map was produced */
+  analysisSource?: 'emotion-engine' | 'keyword-fallback';
+}
+
+export interface StoryLanguage {
+  code: string;
+  name: string;
+  nativeName: string;
+  locale: string;
+  isSupported: boolean;
+  supportedTTSProviders: string[];
+}
+
+export interface TranslationResult {
+  translatedText: string;
+  sourceLanguage: string;
+  targetLanguage: string;
+  provider: string;
+  model: string;
+  confidence: number;
+  preservedStructure: boolean;
+}
+
+export interface TTSProviderCapabilities {
+  languages: string[];
+  voices: string[];
+  supportsEmotion: boolean;
+  supportsProsody: boolean;
+  supportsPitch: boolean;
+  supportsRate: boolean;
+  supportsVolume: boolean;
+  supportsSSML: boolean;
+}
+

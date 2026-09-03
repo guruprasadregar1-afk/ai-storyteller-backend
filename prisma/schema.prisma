@@ -110,6 +110,7 @@ model StorytellingScript {
   contentSource   ContentSource @relation(fields: [contentSourceId], references: [id], onDelete: Cascade)
 
   scenes          SceneBeat[]
+  audio           StoryAudio[]
 
   @@map("storytelling_scripts")
 }
@@ -256,6 +257,24 @@ model VoiceSynthesis {
   createdAt        DateTime @default(now())
 
   @@map("voice_syntheses")
+}
+
+model StoryAudio {
+  id              String             @id @default(uuid())
+  storyScriptId   String
+  provider        String
+  voiceId         String
+  voiceName       String
+  language        String             @default("English")
+  audioUrl        String
+  duration        Float              @default(0.0)
+  format          String             @default("mp3")
+  status          String             @default("READY")
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  script          StorytellingScript @relation(fields: [storyScriptId], references: [id], onDelete: Cascade)
+
+  @@map("story_audio")
 }
 
 model AudioTrack {

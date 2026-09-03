@@ -1,4 +1,5 @@
 import { AIProviderManager } from '../ai/AIProviderManager';
+import { resolveGeminiModel } from '../ai/aiModelConfig';
 import { SceneBeatItem } from '../types';
 import { prismaService } from '../database/prisma/prisma.service';
 
@@ -46,7 +47,7 @@ export class SceneService {
             mode: 'SHORT_SUMMARY',
             language: 'English',
             script: scriptText,
-            model: 'gemini-1.5-flash',
+            model: resolveGeminiModel(),
             provider: 'gemini'
           }
         });
